@@ -32,6 +32,12 @@ Windows 10/11 (64-bit): get `SHENT-<version>-win-x64.zip` from the
 [Releases](../../releases) page, check its SHA-256, unzip it and run `SHENT.exe`. Nothing else needs to be
 installed.
 
+To check the download in PowerShell, compare the output with the `.sha256` file published next to the zip:
+
+```
+Get-FileHash .\SHENT-<version>-win-x64.zip -Algorithm SHA256
+```
+
 ## Build from source
 
 Requires the .NET 10 SDK.
