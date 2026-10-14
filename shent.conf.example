@@ -1,0 +1,42 @@
+# Ejemplo de <carpeta de datos>/shent.conf (clave=valor, # para comentarios).
+# Reemplazá los valores en MAYÚSCULAS por datos reales; las líneas comentadas son opcionales.
+
+network=mainnet
+p2p_port=37373
+listen=1
+max_outbound=8
+max_inbound=32
+lan_discovery=1
+# Encontrar otros nodos por Internet sin configurar direcciones (DHT pública). Solo sugiere direcciones:
+# cada nodo se verifica con el handshake firmado y cada bloque se valida localmente.
+dht=1
+
+# Nodos de arranque (uno por línea). Los datos los muestra el otro nodo con "shent-node id".
+#bootstrap=/ip4/IP_PUBLICA/tcp/37373/p2p/PEER_ID
+#bootstrap=/dns4/DOMINIO/tcp/37373/p2p/PEER_ID
+
+# Pares fijos a los que mantenerse conectado (multiaddr o IP:puerto)
+#addnode=/ip4/IP_DE_OTRA_PC/tcp/37373/p2p/PEER_ID
+
+# NAT
+upnp=1
+relay_client=1
+# relay=1 solo en un servidor con IP pública y el puerto abierto
+relay=0
+#announce=/ip4/IP_PUBLICA_DEL_SERVIDOR/tcp/37373
+
+# Privacidad de red. Dandelion++ oculta qué nodo emitió una transacción a los pares que la reciben.
+dandelion=1
+# Proxy SOCKS5 local (Tor): conectarse solo a través de él, sin escuchar ni usar DHT/LAN/UPnP.
+# Las direcciones y montos de la cadena siguen siendo públicos.
+#proxy=127.0.0.1:9050
+
+# API local de diagnóstico: http://127.0.0.1:37380/api/p2p/status
+api=1
+api_port=0
+
+# Minería (la dirección es pública: nunca pongas aquí una clave privada ni una contraseña)
+mine=0
+mining_threads=2
+mining_intensity=80
+#mining_address=shent1TU_DIRECCION

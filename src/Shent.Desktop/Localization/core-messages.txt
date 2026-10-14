@@ -1,0 +1,58 @@
+Escribí un monto.
+El monto solo puede tener números y un separador decimal.
+El monto tiene los separadores de miles mal ubicados.
+El monto es ambiguo: escribilo sin separador de miles o usá el separador decimal de tu idioma.
+SHENT admite como máximo 8 decimales.
+El monto supera el máximo permitido.
+La dirección está vacía.
+La dirección no es válida: revisá que esté copiada completa y sin errores de escritura.
+La dirección pertenece a otra red ('{0}'); esta red usa '{1}'.
+Versión de dirección no soportada.
+Longitud de dirección inválida.
+Demasiados intentos fallidos. Esperá {0} s antes de volver a intentar.
+La contraseña maestra debe tener al menos {0} caracteres.
+Contraseña incorrecta o archivo dañado.
+El archivo no es un respaldo SHENT válido.
+El archivo está vacío.
+El archivo no es un respaldo SHENT.
+Versión de respaldo no soportada: {0}.
+Algoritmo de derivación no soportado.
+Parámetros de derivación fuera de los límites seguros.
+Algoritmo de cifrado no soportado.
+Datos cifrados con longitud inválida.
+Faltan la red o la dirección.
+Índice de direcciones de cobro fuera de rango.
+Este respaldo es de la red '{0}' y el nodo usa '{1}'.
+Dirección declarada inválida: {0}
+La clave descifrada no corresponde a la dirección declarada.
+La billetera está bloqueada.
+Se alcanzó el máximo de direcciones de cobro.
+Esa dirección no pertenece a esta billetera.
+El memo admite hasta {0} bytes.
+Las coinbase no se transmiten sueltas.
+Transacción de otra red.
+La transacción ya está pendiente.
+La transacción ya está confirmada.
+Comisión inferior a la mínima ({0} SHENT).
+Firma inválida.
+No se permiten transferencias a la misma dirección.
+La transacción ya expiró.
+Nonce ya utilizado (posible reenvío o doble gasto).
+Ya hay otra transacción pendiente con ese nonce (doble gasto rechazado).
+Nonce fuera de secuencia: se esperaba {0}.
+Demasiadas transacciones pendientes para esta dirección.
+El mempool está lleno; probá con una comisión mayor más tarde.
+Saldo insuficiente.
+Dirección vacía.
+Puerto inválido en «{0}».
+Nombre de host inválido: «{0}».
+Un circuito de relay necesita el Peer ID del relay antes de /p2p-circuit.
+Falta el valor de /{0}.
+IPv4 inválida: {0}
+IPv6 inválida: {0}
+Nombre DNS inválido: {0}
+Puerto TCP inválido: {0}
+Peer ID inválido: {0}
+Protocolo no soportado en la dirección: /{0} (usá /ip4, /ip6, /dns4, /tcp, /p2p).
+La dirección necesita /ip4, /ip6 o /dns4.
+Falta el Peer ID del destino después de /p2p-circuit.

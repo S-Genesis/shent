@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.ReceiveDialog"
+             x:DataType="vm:ReceiveDialogViewModel">
+  <StackPanel Spacing="16">
+    <TextBlock Classes="body" TextAlignment="Center" TextWrapping="Wrap"
+               Text="{l:T 'Pasale esta dirección o el código QR a quien te va a pagar. Es nueva y es tuya: usá una distinta para cada persona, así nadie puede juntar todos tus cobros.'}" />
+    <Border HorizontalAlignment="Center" Padding="6" CornerRadius="24" Background="{StaticResource PrimaryGradient}">
+      <ui:QrCodeView Text="{Binding Address}" Width="236" Height="236" Margin="0" />
+    </Border>
+    <StackPanel Spacing="2" HorizontalAlignment="Center">
+      <TextBlock Text="{Binding Pseudonym}" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{StaticResource Primary}" />
+      <TextBlock Classes="caption" HorizontalAlignment="Center">
+        <Run Text="{Binding IndexText}" />
+        <Run Text=" · " />
+        <Run Text="{Binding ShortAddress}" />
+      </TextBlock>
+    </StackPanel>
+    <Border Classes="tile">
+      <SelectableTextBlock Text="{Binding Address}" Classes="mono" FontSize="12.5" TextWrapping="Wrap" TextAlignment="Center" />
+    </Border>
+    <Border Classes="notice danger" IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TextBlock Text="{Binding Error}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+    </Border>
+    <Grid ColumnDefinitions="*,10,2*">
+      <Button Classes="outlined" HorizontalAlignment="Stretch" Command="{Binding AnotherCommand}">
+        <TextBlock Text="{l:T 'Generar otra'}" />
+      </Button>
+      <Button Grid.Column="2" Classes="filled" HorizontalAlignment="Stretch" Command="{Binding CopyCommand}">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <PathIcon Data="{x:Static ui:Icons.Copy}" />
+          <TextBlock Text="{l:T 'Copiar dirección'}" />
+        </StackPanel>
+      </Button>
+    </Grid>
+    <TextBlock Classes="caption" TextWrapping="Wrap" TextAlignment="Center"
+               Text="{l:T 'Todas tus direcciones salen de la misma clave: el respaldo .shent alcanza para recuperarlas. En la cadena los importes siguen siendo visibles.'}" />
+  </StackPanel>
+</UserControl>

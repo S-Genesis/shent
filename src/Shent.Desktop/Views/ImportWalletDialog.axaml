@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.ImportWalletDialog"
+             x:DataType="vm:ImportWalletDialogViewModel">
+  <StackPanel Spacing="16">
+    <TextBlock Classes="body" Text="{l:T 'Elegí el archivo .shent que exportaste. Se descifra en esta PC y se verifica que la clave corresponda a la dirección del respaldo.'}" />
+
+    <Button Classes="outlined" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="16" Command="{Binding PickFileCommand}">
+      <Grid ColumnDefinitions="Auto,*">
+        <Border Classes="iconBadge cyan"><PathIcon Data="{x:Static ui:Icons.Folder}" /></Border>
+        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="2">
+          <TextBlock Text="{l:T 'Elegir archivo…'}" IsVisible="{Binding !HasFile}" FontWeight="SemiBold" />
+          <TextBlock Text="{Binding FileName}" IsVisible="{Binding HasFile}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+          <TextBlock Text="{Binding FilePreview}" IsVisible="{Binding HasFile}" Classes="caption" FontWeight="Normal" />
+        </StackPanel>
+      </Grid>
+    </Button>
+
+    <TextBox Text="{Binding Password}" PasswordChar="●" Watermark="{l:T 'Contraseña maestra del respaldo'}" IsEnabled="{Binding HasFile}">
+      <TextBox.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding ImportCommand}" />
+      </TextBox.KeyBindings>
+    </TextBox>
+
+    <Border Classes="notice danger" IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TextBlock Text="{Binding Error}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+    </Border>
+
+    <Button Classes="filled" HorizontalAlignment="Stretch" Command="{Binding ImportCommand}" IsEnabled="{Binding !IsBusy}">
+      <Panel>
+        <TextBlock Text="{l:T 'Importar y desbloquear'}" IsVisible="{Binding !IsBusy}" />
+        <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsBusy}">
+          <ProgressBar IsIndeterminate="True" Width="60" VerticalAlignment="Center" />
+          <TextBlock Text="{l:T 'Descifrando…'}" />
+        </StackPanel>
+      </Panel>
+    </Button>
+    <TextBlock Classes="caption" TextWrapping="Wrap"
+               Text="{l:T 'Tras 5 intentos fallidos se aplica una espera creciente en esta PC. No hay bloqueo en ningún servidor.'}" />
+  </StackPanel>
+</UserControl>

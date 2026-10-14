@@ -1,0 +1,213 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.MiningView"
+             x:DataType="vm:MiningViewModel">
+  <ScrollViewer Classes="page">
+    <Grid ColumnDefinitions="*,18,380" Margin="0,0,0,28">
+
+      <!-- ================= Columna principal ================= -->
+      <StackPanel Spacing="18">
+
+        <!-- Reactor -->
+        <Border Classes="card" Padding="28">
+          <Grid ColumnDefinitions="Auto,*">
+            <Button Classes="reactorButton" Command="{Binding ToggleCommand}" Width="250" Height="250" ToolTip.Tip="{Binding ToggleText}">
+              <Panel Classes="reactor" Classes.active="{Binding IsMining}" Width="250" Height="250">
+                <Ellipse Classes="glow" Width="250" Height="250">
+                  <Ellipse.Fill>
+                    <RadialGradientBrush>
+                      <GradientStop Color="#80FF9A3D" Offset="0.45" />
+                      <GradientStop Color="#00FF9A3D" Offset="1" />
+                    </RadialGradientBrush>
+                  </Ellipse.Fill>
+                </Ellipse>
+                <Ellipse Classes="ring" Width="226" Height="226" StrokeThickness="2" StrokeDashArray="2,6" Stroke="#55FFB547"><Ellipse.RenderTransform><RotateTransform /></Ellipse.RenderTransform></Ellipse>
+                <Ellipse Classes="ringReverse" Width="200" Height="200" StrokeThickness="3" StrokeDashArray="14,10" Stroke="#408B7CFF"><Ellipse.RenderTransform><RotateTransform /></Ellipse.RenderTransform></Ellipse>
+                <Ellipse Width="172" Height="172" Stroke="#22FFFFFF" StrokeThickness="1" />
+                <Ellipse Classes="core" Width="150" Height="150" />
+                <Ellipse Width="150" Height="150">
+                  <Ellipse.Fill>
+                    <LinearGradientBrush StartPoint="50%,0%" EndPoint="50%,100%">
+                      <GradientStop Color="#30FFFFFF" Offset="0" />
+                      <GradientStop Color="#00FFFFFF" Offset="0.6" />
+                    </LinearGradientBrush>
+                  </Ellipse.Fill>
+                </Ellipse>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="2">
+                  <PathIcon Data="{x:Static ui:Icons.Power}" Width="30" Height="30" Foreground="White" HorizontalAlignment="Center" />
+                  <TextBlock Text="{Binding ReactorText}" FontSize="11" FontWeight="Black" LetterSpacing="2" Foreground="White" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                </StackPanel>
+              </Panel>
+            </Button>
+
+            <StackPanel Grid.Column="1" Margin="32,0,0,0" VerticalAlignment="Center" Spacing="18">
+              <StackPanel Spacing="2">
+                <TextBlock Text="{l:T 'TU HASHRATE'}" Classes="overline" />
+                <TextBlock Text="{Binding Hashrate}" FontSize="46" FontWeight="Bold" LetterSpacing="-1.5" />
+                <TextBlock Text="{Binding HashratePerThread}" Classes="caption" FontSize="13" />
+              </StackPanel>
+              <UniformGrid Columns="3">
+                <StackPanel Spacing="2" Margin="0,0,12,0">
+                  <TextBlock Text="{l:T 'TIEMPO ACTIVO'}" Classes="overline" TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding Uptime}" Classes="h3" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+                <StackPanel Spacing="2" Margin="0,0,12,0">
+                  <TextBlock Text="{l:T 'BLOQUE'}" Classes="overline" TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding WorkingOn}" Classes="h3" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+                <StackPanel Spacing="2">
+                  <TextBlock Text="{l:T 'BLOQUES HALLADOS'}" Classes="overline" TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding BlocksFound}" Classes="h3" Foreground="{StaticResource Amber}" />
+                </StackPanel>
+              </UniformGrid>
+              <Button Classes="filled" Classes.mining="{Binding !IsMining}" HorizontalAlignment="Left" Command="{Binding ToggleCommand}" Padding="22,12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <PathIcon Data="{x:Static ui:Icons.Power}" />
+                  <TextBlock Text="{Binding ToggleText}" />
+                </StackPanel>
+              </Button>
+              <TextBlock Text="{Binding StatusLine}" Classes="caption" TextWrapping="Wrap" />
+              <Border Classes="notice danger" IsVisible="{Binding OfflineWarning, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <TextBlock Text="{Binding OfflineWarning}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+              </Border>
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <!-- Gráfico -->
+        <Border Classes="card">
+          <DockPanel>
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+              <StackPanel Spacing="2">
+                <TextBlock Text="{l:T 'Hashrate en tiempo real'}" Classes="h2" />
+                <TextBlock Text="{l:T 'Últimos 2 minutos · promedio móvil'}" Classes="caption" />
+              </StackPanel>
+              <Border Grid.Column="1" Classes="chip" VerticalAlignment="Center">
+                <TextBlock Text="{Binding TotalHashesText}" />
+              </Border>
+            </Grid>
+            <ui:SparklineChart Values="{Binding HashrateHistory}" Height="190" />
+          </DockPanel>
+        </Border>
+
+        <!-- Bloques encontrados -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <TextBlock Text="{l:T 'Bloques encontrados en esta sesión'}" Classes="h2" />
+            <TextBlock IsVisible="{Binding !HasFoundBlocks}" Classes="body"
+                       Text="{l:T 'Todavía ninguno. Cada bloque válido que encuentre esta PC aparece acá y su recompensa se acredita a la dirección de cobro.'}" />
+            <ItemsControl ItemsSource="{Binding FoundBlocks}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:FoundBlockItem">
+                  <Border Classes="tile" Margin="0,0,0,8" Padding="14,10">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                      <Border Classes="iconBadge amber" Width="36" Height="36"><PathIcon Data="{x:Static ui:Icons.Flash}" /></Border>
+                      <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding HeightText}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding ShortHash}" Classes="caption mono" FontSize="11.5" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Reward, StringFormat='+{0} SHENT'}" Foreground="{StaticResource Amber}" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding When}" Classes="caption" HorizontalAlignment="Right" />
+                      </StackPanel>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+
+      <!-- ================= Columna lateral ================= -->
+      <StackPanel Grid.Column="2" Spacing="18">
+
+        <!-- Configuración -->
+        <Border Classes="card">
+          <StackPanel Spacing="18">
+            <TextBlock Text="{l:T 'Configuración del minero'}" Classes="h2" />
+
+            <StackPanel Spacing="8">
+              <TextBlock Text="{l:T 'Dirección de cobro'}" Classes="overline" />
+              <TextBox Text="{Binding PayoutAddress}" Watermark="shent1…" Classes="mono" FontSize="12" />
+              <TextBlock Text="{Binding PayoutError}" IsVisible="{Binding PayoutError, Converter={x:Static ObjectConverters.IsNotNull}}"
+                         Foreground="{StaticResource Danger}" FontSize="12" TextWrapping="Wrap" />
+              <Button Classes="tonal" Padding="12,7" Command="{Binding UseWalletAddressCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <PathIcon Data="{x:Static ui:Icons.Wallet}" Width="13" Height="13" />
+                  <TextBlock Text="{l:T 'Usar mi billetera'}" FontSize="12.5" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+
+            <StackPanel Spacing="6">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{l:T 'Hilos de CPU'}" Classes="overline" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="{Binding ThreadsText}" FontWeight="SemiBold" />
+              </Grid>
+              <Slider Minimum="1" Maximum="{Binding MaxThreads}" Value="{Binding Threads}" TickFrequency="1" IsSnapToTickEnabled="True" />
+              <TextBlock Text="{Binding CpuText}" Classes="caption" />
+            </StackPanel>
+
+            <StackPanel Spacing="6">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{l:T 'Intensidad'}" Classes="overline" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="{Binding IntensityText}" FontWeight="SemiBold" />
+              </Grid>
+              <Slider Minimum="10" Maximum="100" Value="{Binding Intensity}" TickFrequency="5" IsSnapToTickEnabled="True" />
+              <UniformGrid Columns="3" Margin="-3,0">
+                <Button Classes="tonal" Margin="3,0" Padding="6,7" HorizontalAlignment="Stretch" Command="{Binding SetIntensityCommand}" CommandParameter="30">
+                  <TextBlock Text="{l:T 'Suave'}" FontSize="12.5" />
+                </Button>
+                <Button Classes="tonal" Margin="3,0" Padding="6,7" HorizontalAlignment="Stretch" Command="{Binding SetIntensityCommand}" CommandParameter="65">
+                  <TextBlock Text="{l:T 'Equilibrado'}" FontSize="12.5" />
+                </Button>
+                <Button Classes="tonal" Margin="3,0" Padding="6,7" HorizontalAlignment="Stretch" Command="{Binding SetIntensityCommand}" CommandParameter="100">
+                  <TextBlock Text="{l:T 'Máximo'}" FontSize="12.5" />
+                </Button>
+              </UniformGrid>
+              <TextBlock Text="{Binding IntensityHint}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+
+            <CheckBox IsChecked="{Binding AutoStart}">
+              <TextBlock Text="{l:T 'Empezar a minar al abrir SHENT'}" TextWrapping="Wrap" />
+            </CheckBox>
+          </StackPanel>
+        </Border>
+
+        <!-- Estimaciones -->
+        <Border Classes="card">
+          <StackPanel Spacing="14">
+            <TextBlock Text="{l:T 'Tu parte de la red'}" Classes="h2" />
+            <StackPanel Spacing="8">
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{l:T 'Participación en el hashrate'}" Classes="caption" FontSize="13" />
+                <TextBlock Grid.Column="1" Text="{Binding NetworkShare}" FontWeight="SemiBold" />
+              </Grid>
+              <ProgressBar Classes="amber" Minimum="0" Maximum="1" Value="{Binding NetworkShareRatio}" />
+            </StackPanel>
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+              <TextBlock Grid.Row="0" Text="{l:T 'Tiempo esperado por bloque'}" Classes="caption" FontSize="13" TextWrapping="Wrap" Margin="0,0,12,10" />
+              <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ExpectedTime}" FontWeight="SemiBold" />
+              <TextBlock Grid.Row="1" Text="{l:T 'Estimación diaria'}" Classes="caption" FontSize="13" TextWrapping="Wrap" Margin="0,0,12,10" />
+              <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DailyEstimate}" FontWeight="SemiBold" />
+              <TextBlock Grid.Row="2" Text="{l:T 'Recompensa por bloque'}" Classes="caption" FontSize="13" TextWrapping="Wrap" Margin="0,0,12,10" />
+              <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Reward}" FontWeight="SemiBold" />
+              <TextBlock Grid.Row="3" Text="{l:T 'Dificultad'}" Classes="caption" FontSize="13" TextWrapping="Wrap" Margin="0,0,12,10" />
+              <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Difficulty}" FontWeight="SemiBold" />
+              <TextBlock Grid.Row="4" Text="{l:T 'Hashrate estimado de la red'}" Classes="caption" FontSize="13" TextWrapping="Wrap" Margin="0,0,12,0" />
+              <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding NetworkHashrate}" FontWeight="SemiBold" />
+            </Grid>
+            <Border Classes="notice info">
+              <TextBlock Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}"
+                         Text="{l:T 'Las estimaciones son probabilísticas: encontrar un bloque es aleatorio. El minado usa Argon2id (memoria intensiva), pensado para CPUs comunes. Vigilá la temperatura de tu equipo.'}" />
+            </Border>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+</UserControl>

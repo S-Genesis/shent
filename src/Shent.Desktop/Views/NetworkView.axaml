@@ -1,0 +1,220 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.NetworkView"
+             x:DataType="vm:NetworkViewModel">
+  <ScrollViewer Classes="page">
+    <StackPanel Spacing="18" Margin="0,0,0,28">
+
+      <!-- Identidad del nodo -->
+      <Border Classes="card">
+        <Grid ColumnDefinitions="*,24,*">
+          <StackPanel Spacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Border Classes="iconBadge" VerticalAlignment="Center"><PathIcon Data="{x:Static ui:Icons.Key}" /></Border>
+              <StackPanel Spacing="2" VerticalAlignment="Center">
+                <TextBlock Text="{l:T 'Este nodo'}" Classes="h2" />
+                <TextBlock Text="{l:T 'Identidad P2P persistente. No contiene fondos ni claves de billetera.'}" Classes="caption" />
+              </StackPanel>
+            </StackPanel>
+            <TextBlock Text="{l:T 'PEER ID'}" Classes="overline" />
+            <Border Classes="tile" Padding="12,8">
+              <Grid ColumnDefinitions="*,Auto">
+                <SelectableTextBlock Text="{Binding PeerId}" Classes="mono" FontSize="12.5" TextWrapping="Wrap" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="icon" Width="32" Height="32" ToolTip.Tip="{l:T 'Copiar Peer ID'}"
+                        Command="{Binding CopyTextCommand}" CommandParameter="{Binding PeerId}">
+                  <PathIcon Data="{x:Static ui:Icons.Copy}" Width="14" Height="14" />
+                </Button>
+              </Grid>
+            </Border>
+            <Border Classes="notice" Classes.success="{Binding IsReachable}" Classes.info="{Binding IsReachabilityUnknown}">
+              <StackPanel Spacing="4">
+                <TextBlock Text="{Binding ReachabilityTitle}" FontWeight="SemiBold" FontSize="13" />
+                <TextBlock Text="{Binding ReachabilityText}" Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}" />
+              </StackPanel>
+            </Border>
+            <WrapPanel Orientation="Horizontal">
+              <Border Classes="chip" Margin="0,0,8,8"><TextBlock Text="{Binding DhtText}" FontSize="12" /></Border>
+              <Border Classes="chip" Margin="0,0,8,8"><TextBlock Text="{Binding UpnpText}" FontSize="12" /></Border>
+              <Border Classes="chip" Margin="0,0,8,8"><TextBlock Text="{Binding RelayText}" FontSize="12" /></Border>
+              <Border Classes="chip" Margin="0,0,8,8"><TextBlock Text="{Binding PrivacyText}" FontSize="12" /></Border>
+            </WrapPanel>
+          </StackPanel>
+
+          <StackPanel Grid.Column="2" Spacing="10">
+            <TextBlock Text="{l:T 'DIRECCIONES PARA COMPARTIR POR INTERNET'}" Classes="overline" />
+            <TextBlock Classes="caption" TextWrapping="Wrap" IsVisible="{Binding !HasShareAddresses}"
+                       Text="{l:T 'Todavía no hay una dirección pública verificada. Aparece cuando otro nodo logra conectarse a esta PC, cuando se obtiene un relay o si configurás announce. Mientras tanto podés compartir /ip4/TU_IP_PUBLICA/tcp/PUERTO/p2p/PEER_ID con tu IP pública real.'}" />
+            <ItemsControl ItemsSource="{Binding ShareAddresses}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <Border Classes="tile" Margin="0,0,0,6" Padding="12,6">
+                    <Grid ColumnDefinitions="*,Auto">
+                      <SelectableTextBlock Text="{Binding}" Classes="mono" FontSize="11.5" TextWrapping="Wrap" VerticalAlignment="Center" />
+                      <Button Grid.Column="1" Classes="icon" Width="30" Height="30" ToolTip.Tip="{l:T 'Copiar'}"
+                              Command="{Binding $parent[ItemsControl].((vm:NetworkViewModel)DataContext).CopyTextCommand}" CommandParameter="{Binding}">
+                        <PathIcon Data="{x:Static ui:Icons.Copy}" Width="13" Height="13" />
+                      </Button>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="{l:T 'EN LA RED LOCAL'}" Classes="overline" Margin="0,6,0,0" />
+            <ItemsControl ItemsSource="{Binding LocalAddresses}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <Border Classes="tile" Margin="0,0,0,6" Padding="12,6">
+                    <Grid ColumnDefinitions="*,Auto">
+                      <SelectableTextBlock Text="{Binding}" Classes="mono" FontSize="11.5" TextWrapping="Wrap" VerticalAlignment="Center" />
+                      <Button Grid.Column="1" Classes="icon" Width="30" Height="30" ToolTip.Tip="{l:T 'Copiar'}"
+                              Command="{Binding $parent[ItemsControl].((vm:NetworkViewModel)DataContext).CopyTextCommand}" CommandParameter="{Binding}">
+                        <PathIcon Data="{x:Static ui:Icons.Copy}" Width="13" Height="13" />
+                      </Button>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <UniformGrid Columns="4" Margin="-9,0">
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="10">
+            <Border Classes="iconBadge cyan" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Network}" /></Border>
+            <TextBlock Text="{l:T 'PARES CONECTADOS'}" Classes="overline" />
+            <TextBlock Text="{Binding PeerCount}" Classes="stat" />
+            <TextBlock Classes="caption">
+              <Run Text="{Binding Outbound}" /><Run Text="{l:T ' salientes · '}" /><Run Text="{Binding Inbound}" /><Run Text="{l:T ' entrantes'}" />
+            </TextBlock>
+          </StackPanel>
+        </Border>
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="10">
+            <Border Classes="iconBadge" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Globe}" /></Border>
+            <TextBlock Text="{l:T 'PUERTO P2P'}" Classes="overline" />
+            <TextBlock Text="{Binding Port}" Classes="stat" />
+            <TextBlock Text="{Binding Listening}" Classes="caption" />
+          </StackPanel>
+        </Border>
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="10">
+            <Border Classes="iconBadge green" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Search}" /></Border>
+            <TextBlock Text="{l:T 'DESCUBRIMIENTO LAN'}" Classes="overline" />
+            <TextBlock Text="{Binding LanPort}" Classes="stat" />
+            <TextBlock Text="{Binding LanDiscovery}" Classes="caption" />
+          </StackPanel>
+        </Border>
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="10">
+            <Border Classes="iconBadge amber" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Shield}" /></Border>
+            <TextBlock Text="{l:T 'LIBRETA DE DIRECCIONES'}" Classes="overline" />
+            <TextBlock Text="{Binding KnownAddresses}" Classes="stat" />
+            <TextBlock Text="{Binding BannedText}" Classes="caption" TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+      </UniformGrid>
+
+      <Grid ColumnDefinitions="2*,18,*">
+        <!-- Pares -->
+        <Border Classes="card">
+          <StackPanel Spacing="14">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Spacing="2">
+                <TextBlock Text="{l:T 'Pares'}" Classes="h2" />
+                <TextBlock Text="{l:T 'Cada bloque y transacción recibida se valida localmente; ningún par es de confianza.'}" Classes="caption" />
+              </StackPanel>
+            </Grid>
+
+            <Border Classes="notice info" IsVisible="{Binding NoPeers}">
+              <TextBlock Text="{Binding SeedsText}" TextWrapping="Wrap" FontSize="13" Foreground="{StaticResource TextSecondary}" />
+            </Border>
+
+            <Grid ColumnDefinitions="2*,*,*,*,*,Auto" Margin="14,0" IsVisible="{Binding !NoPeers}">
+              <TextBlock Text="{l:T 'DIRECCIÓN'}" Classes="overline" />
+              <TextBlock Grid.Column="1" Text="{l:T 'TIPO'}" Classes="overline" />
+              <TextBlock Grid.Column="2" Text="{l:T 'ALTURA'}" Classes="overline" />
+              <TextBlock Grid.Column="3" Text="{l:T 'LATENCIA'}" Classes="overline" />
+              <TextBlock Grid.Column="4" Text="{l:T 'CONECTADO'}" Classes="overline" />
+              <Border Grid.Column="5" Width="32" />
+            </Grid>
+            <ItemsControl ItemsSource="{Binding Peers}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:PeerItem">
+                  <Border Classes="tile" Margin="0,0,0,6" Padding="14,10">
+                    <Grid ColumnDefinitions="2*,*,*,*,*,Auto">
+                      <StackPanel VerticalAlignment="Center" Spacing="1">
+                        <TextBlock Text="{Binding Address}" Classes="mono" FontSize="12.5" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Subtitle}" Classes="caption" FontSize="11" TextTrimming="CharacterEllipsis" />
+                      </StackPanel>
+                      <TextBlock Grid.Column="1" Text="{Binding Direction}" VerticalAlignment="Center" FontSize="13" />
+                      <TextBlock Grid.Column="2" Text="{Binding Height}" VerticalAlignment="Center" FontSize="13" />
+                      <TextBlock Grid.Column="3" Text="{Binding Ping}" VerticalAlignment="Center" FontSize="13" />
+                      <TextBlock Grid.Column="4" Text="{Binding Since}" VerticalAlignment="Center" FontSize="13" />
+                      <Button Grid.Column="5" Classes="icon" Width="32" Height="32" ToolTip.Tip="{l:T 'Desconectar'}"
+                              Command="{Binding $parent[ItemsControl].((vm:NetworkViewModel)DataContext).DisconnectCommand}" CommandParameter="{Binding}">
+                        <PathIcon Data="{x:Static ui:Icons.Close}" Width="12" Height="12" />
+                      </Button>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Column="2" Spacing="18">
+          <!-- Sincronización -->
+          <Border Classes="card">
+            <StackPanel Spacing="12">
+              <TextBlock Text="{l:T 'Sincronización'}" Classes="h2" />
+              <ProgressBar Minimum="0" Maximum="1" Value="{Binding SyncRatio}" />
+              <TextBlock Text="{Binding SyncText}" Classes="caption" FontSize="13" />
+              <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <TextBlock Text="{l:T 'Altura local'}" Classes="caption" FontSize="13" Margin="0,0,0,6" />
+                <TextBlock Grid.Column="1" Text="{Binding LocalHeight}" FontWeight="SemiBold" />
+                <TextBlock Grid.Row="1" Text="{l:T 'Mejor altura anunciada'}" Classes="caption" FontSize="13" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding BestHeight}" FontWeight="SemiBold" />
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <!-- Agregar par -->
+          <Border Classes="card">
+            <StackPanel Spacing="12">
+              <TextBlock Text="{l:T 'Conectar con otro nodo'}" Classes="h2" />
+              <TextBlock Classes="body" FontSize="13" TextWrapping="Wrap"
+                         Text="{l:T 'Pegá la dirección que te pasó otra PC (/ip4/…/tcp/…/p2p/peer1…, un circuito de relay o IP:puerto). Con /p2p/ se verifica que sea realmente ese nodo. Se guarda como nodo fijo.'}" />
+              <TextBox Text="{Binding NewPeer}" Watermark="/ip4/IP_PUBLICA/tcp/37373/p2p/PEER_ID" Classes="mono" TextWrapping="Wrap">
+                <TextBox.KeyBindings>
+                  <KeyBinding Gesture="Enter" Command="{Binding AddPeerCommand}" />
+                </TextBox.KeyBindings>
+              </TextBox>
+              <TextBlock Text="{Binding AddError}" IsVisible="{Binding AddError, Converter={x:Static ObjectConverters.IsNotNull}}"
+                         Foreground="{StaticResource Danger}" FontSize="12.5" TextWrapping="Wrap" />
+              <Button Classes="filled" HorizontalAlignment="Stretch" Command="{Binding AddPeerCommand}" IsEnabled="{Binding !IsAdding}">
+                <Panel>
+                  <TextBlock Text="{l:T 'Conectar'}" IsVisible="{Binding !IsAdding}" />
+                  <TextBlock Text="{l:T 'Conectando…'}" IsVisible="{Binding IsAdding}" />
+                </Panel>
+              </Button>
+            </StackPanel>
+          </Border>
+
+          <!-- Ayuda de puertos -->
+          <Border Classes="notice info">
+            <StackPanel Spacing="6">
+              <TextBlock Text="{l:T 'Para recibir conexiones desde Internet'}" FontWeight="SemiBold" FontSize="13" />
+              <TextBlock Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}"
+                         Text="{l:T 'Se intenta abrir el puerto por UPnP. Si no funciona, abrí el puerto TCP del nodo en el firewall y redirigilo en tu router hacia esta PC. Con CGNAT no alcanza: otros nodos llegan a esta PC a través de un relay. Los nodos de arranque y los relays solo ayudan a encontrar pares; cada bloque se valida localmente.'}" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Grid>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

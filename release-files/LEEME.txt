@@ -1,0 +1,60 @@
+SHENT - moneda comunitaria
+==========================
+
+REQUISITOS
+  Windows 10 u 11 de 64 bits. No hace falta instalar nada (ni .NET ni otros programas).
+  No funciona en Windows 7 ni 8.1.
+
+CÓMO ABRIRLA
+  1. Descomprimí el zip completo en una carpeta (por ejemplo, Documentos\SHENT).
+     No la abras desde adentro del zip: el .exe necesita los archivos .dll que lo acompañan.
+  2. Abrí SHENT.exe.
+  3. Si Windows muestra "Windows protegió su PC": tocá "Más información" y después
+     "Ejecutar de todas formas". Aparece porque la aplicación no tiene firma digital paga,
+     no porque se haya detectado algo.
+  4. Si el Firewall de Windows pregunta, permití el acceso. Sin ese permiso el nodo
+     no puede recibir conexiones de otros nodos.
+
+CONEXIÓN CON OTROS NODOS
+  No hay que configurar nada: el nodo busca a los demás solo, por Internet (DHT pública)
+  y en la red local. Cada nodo encontrado se verifica con una firma y cada bloque se
+  valida en tu PC: nadie puede darte bloques falsos ni cambiar saldos.
+
+  Para que otros puedan conectarse a tu PC (y la red sea más fuerte), abrí en tu router
+  el puerto TCP 37373 hacia esta PC, o activá UPnP en el router. Si tu proveedor usa CGNAT
+  no vas a poder abrir puertos: igual te podés conectar a otros nodos que sí los tengan abiertos.
+
+BILLETERA
+  Tus claves se guardan cifradas en esta PC. Exportá el respaldo (.shent) y guardá la
+  contraseña en un lugar seguro: si perdés las dos cosas, nadie puede recuperar las monedas.
+  "Recibir" muestra una dirección nueva cada vez; todas salen del mismo respaldo.
+
+PRIVACIDAD
+  Tus transacciones viajan primero por un camino aleatorio de nodos antes de difundirse
+  (Dandelion++), para que no se sepa desde qué IP salieron. En Configuración > Privacidad
+  podés conectarte por Tor (proxy 127.0.0.1:9150 con el Tor Browser abierto) para que
+  ningún nodo vea tu IP.
+  Importante: en la cadena, las direcciones y los montos de cada transferencia son públicos,
+  como en Bitcoin.
+
+IDIOMA
+  El selector con el globo (arriba a la derecha) cambia la interfaz entre español, inglés,
+  portugués, francés, alemán, italiano, ruso, chino, japonés y turco. Los montos se escriben
+  con el separador decimal del idioma elegido (12,5 en español, 12.5 en inglés); si un monto
+  es ambiguo, la app lo rechaza en lugar de adivinar. Los registros del nodo siguen en español.
+
+ESTADÍSTICAS
+  Monedas emitidas, mineros activos, potencia de la red y bloques por día, calculados solo con
+  los bloques que validó tu nodo. SHENT no tiene precio: no cotiza en ningún mercado y la app
+  no compra ni vende. "Mineros" cuenta direcciones distintas, no personas.
+
+DÓNDE SE GUARDAN LOS DATOS
+  %APPDATA%\SHENT   (cadena de bloques, billeteras cifradas y configuración)
+
+NODO DE CONSOLA (opcional)
+  La carpeta nodo-consola contiene shent-node.exe, para dejar un nodo corriendo en un
+  servidor o en una PC sin interfaz. Ayuda: nodo-consola\shent-node.exe help
+
+VERIFICAR LOS ARCHIVOS
+  SHA256SUMS.txt tiene el hash de cada archivo. En PowerShell:
+    Get-FileHash .\SHENT.exe -Algorithm SHA256

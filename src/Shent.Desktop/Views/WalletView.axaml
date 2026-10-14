@@ -1,0 +1,243 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.WalletView"
+             x:DataType="vm:WalletViewModel">
+  <Panel>
+
+    <!-- ================= Bloqueada / sin billetera ================= -->
+    <ScrollViewer Classes="page" IsVisible="{Binding !IsUnlocked}">
+      <Grid ColumnDefinitions="*,18,*" Margin="0,0,0,28" VerticalAlignment="Top">
+        <Border Classes="card" Padding="28">
+          <StackPanel Spacing="16">
+            <Border Classes="iconBadge" Width="54" Height="54" CornerRadius="18" HorizontalAlignment="Left">
+              <PathIcon Data="{x:Static ui:Icons.Lock}" Width="24" Height="24" />
+            </Border>
+            <TextBlock Text="{l:T 'Desbloquear billetera'}" Classes="h1" FontSize="22" />
+
+            <StackPanel IsVisible="{Binding HasSavedWallets}" Spacing="14">
+              <TextBlock Classes="body" Text="{l:T 'Elegí una billetera guardada en esta PC e ingresá su contraseña maestra. El descifrado se hace localmente.'}" />
+              <ListBox Classes="plain" ItemsSource="{Binding SavedWallets}" SelectedItem="{Binding SelectedSaved}" MaxHeight="260">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="vm:SavedWalletItem">
+                    <Border Padding="12" CornerRadius="16" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+                      <Grid ColumnDefinitions="Auto,*">
+                        <Border Width="40" Height="40" CornerRadius="13" Background="{StaticResource PrimaryGradient}">
+                          <TextBlock Text="{Binding Initials}" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" Spacing="1">
+                          <TextBlock FontWeight="SemiBold">
+                            <Run Text="{Binding Pseudonym}" />
+                            <Run Text=" · " Foreground="{StaticResource TextMuted}" />
+                            <Run Text="{Binding Label}" Foreground="{StaticResource TextSecondary}" FontWeight="Normal" />
+                          </TextBlock>
+                          <TextBlock Classes="caption">
+                            <Run Text="{Binding ShortAddress}" />
+                            <Run Text=" · " />
+                            <Run Text="{Binding Created}" />
+                          </TextBlock>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <TextBox Text="{Binding Password}" PasswordChar="●" Watermark="{l:T 'Contraseña maestra'}" RevealPassword="False">
+                <TextBox.KeyBindings>
+                  <KeyBinding Gesture="Enter" Command="{Binding UnlockCommand}" />
+                </TextBox.KeyBindings>
+              </TextBox>
+              <Border Classes="notice danger" IsVisible="{Binding UnlockError, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <TextBlock Text="{Binding UnlockError}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+              </Border>
+              <Button Classes="filled" HorizontalAlignment="Stretch" Command="{Binding UnlockCommand}" IsEnabled="{Binding CanUnlock}">
+                <Panel>
+                  <TextBlock Text="{l:T 'Desbloquear'}" IsVisible="{Binding !IsBusy}" />
+                  <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsBusy}">
+                    <ProgressBar IsIndeterminate="True" Width="60" VerticalAlignment="Center" />
+                    <TextBlock Text="{l:T 'Descifrando…'}" />
+                  </StackPanel>
+                </Panel>
+              </Button>
+            </StackPanel>
+
+            <TextBlock IsVisible="{Binding !HasSavedWallets}" Classes="body"
+                       Text="{l:T 'No hay billeteras en esta PC para la red actual. Creá una nueva o importá un respaldo .shent desde otro equipo.'}" />
+          </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Column="2" Spacing="18">
+          <Border Classes="card">
+            <StackPanel Spacing="14">
+              <Border Classes="iconBadge green" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Plus}" /></Border>
+              <TextBlock Text="{l:T 'Crear billetera nueva'}" Classes="h2" />
+              <TextBlock Classes="body" Text="{l:T 'Se genera un par de claves Ed25519 con el generador aleatorio del sistema operativo. La clave privada se guarda cifrada con Argon2id + ChaCha20-Poly1305.'}" />
+              <Button Classes="filled" HorizontalAlignment="Left" Command="{Binding CreateCommand}">
+                <TextBlock Text="{l:T 'Crear billetera'}" />
+              </Button>
+            </StackPanel>
+          </Border>
+          <Border Classes="card">
+            <StackPanel Spacing="14">
+              <Border Classes="iconBadge cyan" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Download}" /></Border>
+              <TextBlock Text="{l:T 'Importar respaldo'}" Classes="h2" />
+              <TextBlock Classes="body" Text="{l:T 'Abrí tu archivo .shent (de otra PC, un pendrive o tu nube) y desbloquealo con su contraseña. Se verifica que la dirección coincida con la clave.'}" />
+              <Button Classes="outlined" HorizontalAlignment="Left" Command="{Binding ImportCommand}">
+                <TextBlock Text="{l:T 'Importar archivo .shent'}" />
+              </Button>
+            </StackPanel>
+          </Border>
+          <Border Classes="notice">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <PathIcon Data="{x:Static ui:Icons.Info}" Width="16" Height="16" Foreground="{StaticResource Amber}" VerticalAlignment="Top" />
+              <TextBlock Classes="caption" TextWrapping="Wrap" MaxWidth="440" Foreground="{StaticResource TextSecondary}"
+                         Text="{l:T 'No existe recuperación por correo ni por soporte: si perdés el archivo de respaldo o la contraseña, las monedas quedan inaccesibles para siempre.'}" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+
+    <!-- ================= Desbloqueada ================= -->
+    <ScrollViewer Classes="page" IsVisible="{Binding IsUnlocked}">
+      <StackPanel Spacing="18" Margin="0,0,0,28">
+        <Grid ColumnDefinitions="2*,18,*">
+          <Border Classes="hero">
+            <Panel>
+              <Path Data="{x:Static ui:Icons.Hexagon}" Width="280" Height="280" Stretch="Uniform" Fill="#14FFFFFF"
+                    HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-80,-60,0" />
+              <StackPanel Spacing="16">
+                <Grid ColumnDefinitions="*,Auto">
+                  <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding Label}" Classes="overline" Foreground="#CCFFFFFF" />
+                    <TextBlock Text="{Binding Pseudonym}" FontSize="15" FontWeight="SemiBold" Foreground="White" />
+                  </StackPanel>
+                  <Button Grid.Column="1" Classes="glass" Padding="12,8" Command="{Binding LockCommand}" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                      <PathIcon Data="{x:Static ui:Icons.Lock}" Width="14" Height="14" />
+                      <TextBlock Text="{l:T 'Bloquear'}" FontSize="13" />
+                    </StackPanel>
+                  </Button>
+                </Grid>
+                <StackPanel Spacing="2">
+                  <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="{Binding Balance}" Classes="display" Foreground="White" />
+                    <TextBlock Text="SHENT" FontSize="18" FontWeight="SemiBold" Foreground="#CCFFFFFF" VerticalAlignment="Bottom" Margin="0,0,0,9" />
+                  </StackPanel>
+                  <TextBlock Foreground="#D0FFFFFF" FontSize="13">
+                    <Run Text="{l:T 'Disponible para enviar: '}" />
+                    <Run Text="{Binding Available}" FontWeight="SemiBold" />
+                  </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                  <Button Classes="glass" Command="{Binding SendCommand}" Background="#40FFFFFF">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <PathIcon Data="{x:Static ui:Icons.Send}" />
+                      <TextBlock Text="{l:T 'Enviar'}" />
+                    </StackPanel>
+                  </Button>
+                  <Button Classes="glass" Command="{Binding ReceiveCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <PathIcon Data="{x:Static ui:Icons.Qr}" />
+                      <TextBlock Text="{l:T 'Recibir'}" />
+                    </StackPanel>
+                  </Button>
+                  <Button Classes="glass" Command="{Binding ExportCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <PathIcon Data="{x:Static ui:Icons.Shield}" />
+                      <TextBlock Text="{l:T 'Respaldo y seguridad'}" />
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </StackPanel>
+            </Panel>
+          </Border>
+
+          <Border Grid.Column="2" Classes="card">
+            <StackPanel Spacing="14">
+              <TextBlock Text="{l:T 'Tu dirección principal'}" Classes="h2" />
+              <TextBlock Classes="caption" TextWrapping="Wrap"
+                         Text="{l:T 'Para cobrar usá «Recibir»: te da una dirección nueva cada vez, así nadie puede juntar todos tus cobros.'}" />
+              <Border Classes="tile" Padding="14">
+                <SelectableTextBlock Text="{Binding Address}" Classes="mono" FontSize="12.5" TextWrapping="Wrap" />
+              </Border>
+              <Button Classes="tonal" HorizontalAlignment="Stretch" Command="{Binding CopyAddressCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <PathIcon Data="{x:Static ui:Icons.Copy}" />
+                  <TextBlock Text="{l:T 'Copiar dirección'}" />
+                </StackPanel>
+              </Button>
+              <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                <TextBlock Text="{l:T 'Pendiente de recibir'}" Classes="caption" FontSize="13" Margin="0,0,0,8" />
+                <TextBlock Grid.Column="1" Text="{Binding PendingIn}" Foreground="{StaticResource Success}" FontWeight="SemiBold" />
+                <TextBlock Grid.Row="1" Text="{l:T 'Pendiente de enviar'}" Classes="caption" FontSize="13" Margin="0,0,0,8" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding PendingOut}" Foreground="{StaticResource Danger}" FontWeight="SemiBold" />
+                <TextBlock Grid.Row="2" Text="{l:T 'Transacciones enviadas'}" Classes="caption" FontSize="13" Margin="0,0,0,8" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Nonce}" FontWeight="SemiBold" />
+                <TextBlock Grid.Row="3" Text="{l:T 'Direcciones de cobro generadas'}" Classes="caption" FontSize="13" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ReceiveAddresses}" FontWeight="SemiBold" />
+              </Grid>
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <!-- Historial -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Text="{l:T 'Movimientos'}" Classes="h2" VerticalAlignment="Center" />
+              <Button Grid.Column="1" Classes="tonal" Padding="12,7" Command="{Binding OpenWalletsFolderCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <PathIcon Data="{x:Static ui:Icons.Folder}" Width="13" Height="13" />
+                  <TextBlock Text="{l:T 'Carpeta de billeteras'}" FontSize="12.5" />
+                </StackPanel>
+              </Button>
+            </Grid>
+            <TextBlock IsVisible="{Binding !HasHistory}" Classes="body" Text="{l:T 'Sin movimientos todavía. Minando o recibiendo SHENT vas a ver acá cada transacción.'}" />
+            <ItemsControl ItemsSource="{Binding History}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:TxItem">
+                  <Border Classes="tile" Margin="0,0,0,8" Padding="14,12">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                      <Border Classes="txIcon" Classes.incoming="{Binding IsIncoming}" Classes.mined="{Binding IsMined}">
+                        <PathIcon Data="{Binding Icon}" />
+                      </Border>
+                      <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center" Spacing="2">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                          <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                          <Border Background="{StaticResource AmberSoft}" CornerRadius="99" Padding="8,1" IsVisible="{Binding Pending}">
+                            <TextBlock Text="{l:T 'pendiente'}" FontSize="11" Foreground="{StaticResource Amber}" FontWeight="SemiBold" />
+                          </Border>
+                        </StackPanel>
+                        <TextBlock Classes="caption">
+                          <Run Text="{Binding Counterparty}" />
+                          <Run Text=" · " />
+                          <Run Text="{Binding WhenText}" />
+                          <Run Text=" · " />
+                          <Run Text="{Binding StatusText}" />
+                        </TextBlock>
+                        <TextBlock Text="{Binding Memo}" Classes="caption" FontStyle="Italic"
+                                   IsVisible="{Binding Memo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Classes="amount" Classes.incoming="{Binding IsIncoming}" Classes.mined="{Binding IsMined}"
+                                   Text="{Binding Amount}" FontWeight="Bold" FontSize="15" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding ShortId}" Classes="caption mono" FontSize="11" HorizontalAlignment="Right" />
+                      </StackPanel>
+                      <Button Grid.Column="3" Classes="icon" Margin="10,0,0,0" Width="32" Height="32" ToolTip.Tip="{l:T 'Copiar ID'}"
+                              Command="{Binding $parent[ItemsControl].((vm:WalletViewModel)DataContext).CopyTxIdCommand}" CommandParameter="{Binding}">
+                        <PathIcon Data="{x:Static ui:Icons.Copy}" Width="13" Height="13" />
+                      </Button>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </Panel>
+</UserControl>

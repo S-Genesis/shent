@@ -1,0 +1,133 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  <ScrollViewer Classes="page">
+    <Grid ColumnDefinitions="*,18,*" Margin="0,0,0,28">
+      <StackPanel Spacing="18">
+
+        <Border Classes="card">
+          <StackPanel Spacing="16">
+            <TextBlock Text="{l:T 'Red'}" Classes="h2" />
+            <ComboBox ItemsSource="{Binding Networks}" SelectedItem="{Binding SelectedNetwork}" HorizontalAlignment="Stretch">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:NetworkOption">
+                  <StackPanel Spacing="1" Margin="0,2">
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Description}" Classes="caption" TextWrapping="Wrap" />
+                  </StackPanel>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Classes="caption" TextWrapping="Wrap"
+                       Text="{l:T 'Cada red tiene su propia cadena, sus propias billeteras y su propio prefijo de dirección (shent1, tshent1, rshent1). Una transacción firmada para una red no es válida en otra.'}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="card">
+          <StackPanel Spacing="16">
+            <TextBlock Text="{l:T 'Conexiones'}" Classes="h2" />
+            <StackPanel Spacing="6">
+              <TextBlock Text="{l:T 'Puerto P2P (TCP)'}" Classes="overline" />
+              <TextBox Text="{Binding Port}" Watermark="{l:T 'Por defecto'}" />
+              <TextBlock Text="{Binding DefaultPortHint}" Classes="caption" />
+            </StackPanel>
+            <ToggleSwitch IsChecked="{Binding Listen}" OnContent="{l:T 'Aceptar conexiones entrantes'}" OffContent="{l:T 'Solo conexiones salientes'}" />
+            <ToggleSwitch IsChecked="{Binding LanDiscovery}" OnContent="{l:T 'Descubrir nodos en la red local'}" OffContent="{l:T 'Descubrimiento local desactivado'}" />
+            <ToggleSwitch IsChecked="{Binding Dht}" OnContent="{l:T 'Encontrar nodos por Internet automáticamente (DHT)'}" OffContent="{l:T 'Búsqueda por Internet desactivada'}" />
+            <ToggleSwitch IsChecked="{Binding Upnp}" OnContent="{l:T 'Abrir el puerto en el router (UPnP)'}" OffContent="{l:T 'UPnP desactivado'}" />
+            <ToggleSwitch IsChecked="{Binding RelayClient}" OnContent="{l:T 'Usar un relay si esta PC no es accesible'}" OffContent="{l:T 'No usar relays'}" />
+            <ToggleSwitch IsChecked="{Binding RelayService}" OnContent="{l:T 'Ofrecer relay a otros nodos'}" OffContent="{l:T 'No ofrecer relay'}" />
+            <TextBlock Classes="caption" TextWrapping="Wrap"
+                       Text="{l:T 'Ofrecer relay conviene solo en una PC o servidor con IP pública y el puerto abierto: reenvía el tráfico entre nodos detrás de NAT, con límites de conexiones y volumen. Ese tráfico no va cifrado, pero los extremos se autentican entre sí y el relay no valida ni decide nada por los demás.'}" />
+            <Grid ColumnDefinitions="*,16,*">
+              <StackPanel Spacing="6">
+                <TextBlock Text="{l:T 'Máx. salientes'}" Classes="overline" />
+                <NumericUpDown Value="{Binding MaxOutbound}" Minimum="0" Maximum="64" Increment="1" FormatString="0" />
+              </StackPanel>
+              <StackPanel Grid.Column="2" Spacing="6">
+                <TextBlock Text="{l:T 'Máx. entrantes'}" Classes="overline" />
+                <NumericUpDown Value="{Binding MaxInbound}" Minimum="0" Maximum="512" Increment="1" FormatString="0" />
+              </StackPanel>
+            </Grid>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+
+      <StackPanel Grid.Column="2" Spacing="18">
+        <Border Classes="card">
+          <StackPanel Spacing="14">
+            <TextBlock Text="{l:T 'Privacidad'}" Classes="h2" />
+            <ToggleSwitch IsChecked="{Binding Dandelion}" OnContent="{l:T 'Ocultar desde qué PC salen mis transacciones (Dandelion++)'}" OffContent="{l:T 'Difundir mis transacciones directo'}" />
+            <TextBlock Classes="caption" TextWrapping="Wrap"
+                       Text="{l:T 'Cada transacción tuya pasa primero en privado por otros nodos elegidos al azar y recién después se difunde, así quien la ve no puede saber que salió de tu PC.'}" />
+            <ToggleSwitch IsChecked="{Binding UseProxy}" OnContent="{l:T 'Conectarme a través de Tor (proxy SOCKS5)'}" OffContent="{l:T 'Conexión directa'}" />
+            <StackPanel Spacing="6" IsVisible="{Binding UseProxy}">
+              <TextBox Text="{Binding Proxy}" Watermark="127.0.0.1:9050" Classes="mono" />
+              <TextBlock Classes="caption" TextWrapping="Wrap"
+                         Text="{l:T 'Necesitás Tor abierto en esta PC (127.0.0.1:9050, o 127.0.0.1:9150 con Tor Browser). Los demás nodos ven la IP de Tor, no la tuya. Se desactivan la escucha, UPnP, la búsqueda por DHT y la red local porque revelarían tu IP; conviene haber abierto SHENT al menos una vez sin Tor para conocer nodos.'}" />
+            </StackPanel>
+            <TextBlock Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource Amber}"
+                       Text="{l:T 'Las direcciones y los importes siguen siendo públicos en la cadena, como en Bitcoin. Para que no puedan juntar tus cobros, usá una dirección nueva cada vez (botón Recibir).'}" />
+          </StackPanel>
+        </Border>
+
+        <Border Classes="card">
+          <StackPanel Spacing="16">
+            <TextBlock Text="{l:T 'Nodos iniciales (opcional)'}" Classes="h2" />
+            <TextBlock Classes="caption" TextWrapping="Wrap"
+                       Text="{l:T 'No hace falta cargar nada: el nodo encuentra a los demás solo por Internet (DHT) y en la red local. Usá estas listas solo si querés asegurar la conexión con nodos concretos.'}" />
+            <StackPanel Spacing="6">
+              <TextBlock Text="{l:T 'Nodos de arranque (bootstrap)'}" Classes="overline" />
+              <TextBox Text="{Binding Seeds}" AcceptsReturn="True" MinHeight="90" TextWrapping="NoWrap" Classes="mono" FontSize="12.5"
+                       Watermark="/ip4/IP_PUBLICA/tcp/37373/p2p/PEER_ID" VerticalContentAlignment="Top" />
+              <TextBlock Classes="caption" TextWrapping="Wrap"
+                         Text="{l:T 'Uno por línea. Reemplazá IP_PUBLICA y PEER_ID por los datos que muestra la otra PC en Red P2P. Solo sirven para encontrar pares: no controlan saldos ni validan bloques.'}" />
+            </StackPanel>
+            <StackPanel Spacing="6">
+              <TextBlock Text="{l:T 'Nodos fijos'}" Classes="overline" />
+              <TextBox Text="{Binding AddNodes}" AcceptsReturn="True" MinHeight="90" TextWrapping="NoWrap" Classes="mono" FontSize="12.5"
+                       Watermark="192.168.0.20:37373" VerticalContentAlignment="Top" />
+              <TextBlock Classes="caption" TextWrapping="Wrap" Text="{l:T 'El nodo intenta mantenerse conectado a estas direcciones (multiaddr o IP:puerto).'}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <TextBlock Text="{l:T 'Datos'}" Classes="h2" />
+            <TextBlock Text="{l:T 'Carpeta de datos'}" Classes="overline" />
+            <SelectableTextBlock Text="{Binding DataDirectory}" Classes="mono" FontSize="12" TextWrapping="Wrap" />
+            <TextBlock Text="{l:T 'Archivo de configuración'}" Classes="overline" />
+            <SelectableTextBlock Text="{Binding ConfigPath}" Classes="mono" FontSize="12" TextWrapping="Wrap" />
+            <Button Classes="tonal" HorizontalAlignment="Left" Command="{Binding OpenDataFolderCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="{x:Static ui:Icons.Folder}" />
+                <TextBlock Text="{l:T 'Abrir carpeta'}" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+        </Border>
+
+        <Border Classes="notice danger" IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}">
+          <TextBlock Text="{Binding Error}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+        </Border>
+
+        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+          <Button Classes="outlined" Command="{Binding RevertCommand}">
+            <TextBlock Text="{l:T 'Descartar cambios'}" />
+          </Button>
+          <Button Classes="filled" Command="{Binding SaveAndRestartCommand}" IsEnabled="{Binding !IsSaving}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <PathIcon Data="{x:Static ui:Icons.Refresh}" />
+              <TextBlock Text="{l:T 'Guardar y reiniciar nodo'}" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+</UserControl>

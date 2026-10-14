@@ -1,0 +1,32 @@
+bin/
+obj/
+artifacts/
+publish/
+release/
+*.user
+*.suo
+.vs/
+.idea/
+TestResults/
+*.log
+
+# Secretos y entornos locales
+.env
+.env.*
+!.env.example
+
+# Respaldos de billetera: nunca deben versionarse
+*.shent
+
+# Datos locales de nodo (incluida la identidad P2P y la lista de pares)
+.shent-data/
+node_key.json
+node_key.json.*
+peers.json
+shent.conf
+
+# Restos de la versión JavaScript anterior
+node_modules/
+package-lock.json
+.DS_Store
+Thumbs.db

@@ -1,0 +1,176 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.StatsView"
+             x:DataType="vm:StatsViewModel">
+  <ScrollViewer Classes="page">
+    <StackPanel Spacing="18" Margin="0,0,0,28">
+
+      <Border Classes="notice info">
+        <Grid ColumnDefinitions="Auto,*">
+          <PathIcon Data="{x:Static ui:Icons.Info}" Width="18" Height="18" VerticalAlignment="Top" Margin="0,1,10,0" Foreground="{StaticResource TextSecondary}" />
+          <TextBlock Grid.Column="1" Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}"
+                     Text="{l:T 'SHENT no tiene precio: no cotiza en ningún mercado y esta app no compra ni vende. Estas cifras salen solo de los bloques que validó tu nodo. «Mineros» cuenta direcciones distintas que cobraron una recompensa: una persona puede usar varias.'}" />
+        </Grid>
+      </Border>
+
+      <!-- Indicadores -->
+      <UniformGrid Columns="4" Margin="-9,0">
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="12">
+            <Border Classes="iconBadge amber" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Hexagon}" /></Border>
+            <StackPanel Spacing="2">
+              <TextBlock Text="{l:T 'MONEDAS EMITIDAS'}" Classes="overline" />
+              <TextBlock Text="{Binding Issued}" Classes="stat" TextTrimming="CharacterEllipsis" />
+              <TextBlock Text="{Binding IssuedCaption}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="12">
+            <Border Classes="iconBadge cyan" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Flash}" /></Border>
+            <StackPanel Spacing="2">
+              <TextBlock Text="{l:T 'MINEROS EN 24 H'}" Classes="overline" />
+              <TextBlock Text="{Binding Miners}" Classes="stat" />
+              <TextBlock Text="{Binding MinersCaption}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="12">
+            <Border Classes="iconBadge" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Chip}" /></Border>
+            <StackPanel Spacing="2">
+              <TextBlock Text="{l:T 'POTENCIA DE LA RED'}" Classes="overline" />
+              <TextBlock Text="{Binding Hashrate}" Classes="stat" />
+              <TextBlock Text="{l:T 'Promedio estimado de las últimas 24 h'}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <Border Classes="card" Margin="9,0" Padding="18">
+          <StackPanel Spacing="12">
+            <Border Classes="iconBadge green" HorizontalAlignment="Left"><PathIcon Data="{x:Static ui:Icons.Cube}" /></Border>
+            <StackPanel Spacing="2">
+              <TextBlock Text="{l:T 'BLOQUES EN 24 H'}" Classes="overline" />
+              <TextBlock Text="{Binding Blocks24h}" Classes="stat" />
+              <TextBlock Text="{Binding BlocksCaption}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </UniformGrid>
+
+      <!-- Gráficos de 30 días -->
+      <Grid ColumnDefinitions="*,18,*" RowDefinitions="Auto,18,Auto">
+        <Border Classes="card">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel>
+                <TextBlock Text="{l:T 'Monedas en circulación'}" Classes="h3" />
+                <TextBlock Text="{Binding SeriesRange}" Classes="caption" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding SupplyToday}" FontWeight="SemiBold" VerticalAlignment="Top" Foreground="{StaticResource Amber}" />
+            </Grid>
+            <ui:SparklineChart Values="{Binding SupplySeries}" Height="130" LineColor="#FFB547" LineColorEnd="#FF7A59" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="2" Classes="card">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel>
+                <TextBlock Text="{l:T 'Potencia de la red'}" Classes="h3" />
+                <TextBlock Text="{Binding SeriesRange}" Classes="caption" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding HashrateToday}" FontWeight="SemiBold" VerticalAlignment="Top" />
+            </Grid>
+            <ui:SparklineChart Values="{Binding HashrateSeries}" Height="130" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Row="2" Classes="card">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel>
+                <TextBlock Text="{l:T 'Bloques por día'}" Classes="h3" />
+                <TextBlock Text="{Binding SeriesRange}" Classes="caption" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding BlocksToday}" FontWeight="SemiBold" VerticalAlignment="Top" />
+            </Grid>
+            <ui:SparklineChart Values="{Binding BlocksSeries}" Height="130" LineColor="#34D399" LineColorEnd="#22D3EE" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Row="2" Grid.Column="2" Classes="card">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel>
+                <TextBlock Text="{l:T 'Mineros por día'}" Classes="h3" />
+                <TextBlock Text="{Binding SeriesRange}" Classes="caption" />
+              </StackPanel>
+              <TextBlock Grid.Column="1" Text="{Binding MinersToday}" FontWeight="SemiBold" VerticalAlignment="Top" />
+            </Grid>
+            <ui:SparklineChart Values="{Binding MinersSeries}" Height="130" LineColor="#22D3EE" LineColorEnd="#8B7CFF" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Grid ColumnDefinitions="*,18,2*">
+        <!-- Emisión -->
+        <Border Classes="card">
+          <StackPanel Spacing="14">
+            <TextBlock Text="{l:T 'Emisión'}" Classes="h2" />
+            <Panel Width="120" Height="120" HorizontalAlignment="Left">
+              <ui:ArcGauge Value="{Binding IssuedRatio}" StrokeWidth="12" />
+              <PathIcon Data="{x:Static ui:Icons.Hexagon}" Width="30" Height="30" Foreground="{StaticResource Amber}" />
+            </Panel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="{l:T 'RECOMPENSA ACTUAL'}" Classes="overline" />
+              <TextBlock Text="{Binding Subsidy}" FontWeight="Bold" FontSize="17" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding HalvingText}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="{l:T 'TRANSACCIONES EN 24 H'}" Classes="overline" />
+              <TextBlock Text="{Binding Transactions24h}" FontWeight="Bold" FontSize="17" />
+            </StackPanel>
+            <TextBlock Text="{Binding MaxSupply}" Classes="caption" TextWrapping="Wrap" />
+          </StackPanel>
+        </Border>
+
+        <!-- Quién mina -->
+        <Border Grid.Column="2" Classes="card">
+          <StackPanel Spacing="12">
+            <StackPanel>
+              <TextBlock Text="{l:T 'Quién mina'}" Classes="h2" />
+              <TextBlock Text="{l:T 'Direcciones que más bloques encontraron en los últimos 7 días'}" Classes="caption" />
+            </StackPanel>
+            <TextBlock Text="{l:T 'Todavía no hay bloques minados en los últimos 7 días.'}" Classes="caption" IsVisible="{Binding !HasMiners}" />
+            <ItemsControl ItemsSource="{Binding TopMiners}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:MinerRow">
+                  <Border Classes="tile" Margin="0,0,0,8" Padding="14,10">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                      <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{Binding Pseudonym}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding ShortAddress}" Classes="caption mono" VerticalAlignment="Center" />
+                        <Border Background="{StaticResource AmberSoft}" CornerRadius="99" Padding="8,1" IsVisible="{Binding IsMine}">
+                          <TextBlock Text="{l:T 'vos'}" FontSize="11" Foreground="{StaticResource Amber}" FontWeight="SemiBold" />
+                        </Border>
+                      </StackPanel>
+                      <TextBlock Grid.Column="1" HorizontalAlignment="Right" Classes="caption">
+                        <Run Text="{Binding BlocksText}" />
+                        <Run Text=" · " />
+                        <Run Text="{Binding ShareText}" FontWeight="SemiBold" />
+                      </TextBlock>
+                      <ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,0,0" Minimum="0" Maximum="1" Value="{Binding Share}" Classes="amber" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Border Classes="notice danger" IsVisible="{Binding ConcentrationWarning, Converter={x:Static ObjectConverters.IsNotNull}}">
+              <TextBlock Text="{Binding ConcentrationWarning}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+            </Border>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

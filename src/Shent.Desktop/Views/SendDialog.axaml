@@ -1,0 +1,134 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.SendDialog"
+             x:DataType="vm:SendDialogViewModel">
+  <Panel>
+    <!-- Formulario -->
+    <StackPanel Spacing="16" IsVisible="{Binding IsFormStep}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="{l:T 'Destinatario'}" Classes="overline" />
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBox Text="{Binding Recipient}" Watermark="{Binding Hrp, StringFormat='{}{0}1…'}" Classes="mono" FontSize="12.5" />
+          <Button Grid.Column="1" Classes="tonal" Margin="8,0,0,0" Command="{Binding PasteCommand}">
+            <TextBlock Text="{l:T 'Pegar'}" />
+          </Button>
+        </Grid>
+      </StackPanel>
+
+      <StackPanel Spacing="6">
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock Text="{l:T 'Importe'}" Classes="overline" VerticalAlignment="Center" />
+          <TextBlock Grid.Column="1" Classes="caption">
+            <Run Text="{l:T 'Disponible: '}" /><Run Text="{Binding Available}" FontWeight="SemiBold" Foreground="{StaticResource TextSecondary}" /><Run Text=" SHENT" />
+          </TextBlock>
+        </Grid>
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBox Classes="big" Text="{Binding Amount}" Watermark="{l:T '0,00'}">
+            <TextBox.InnerRightContent>
+              <TextBlock Text="SHENT" Margin="0,0,16,0" VerticalAlignment="Center" Foreground="{StaticResource TextMuted}" FontWeight="SemiBold" />
+            </TextBox.InnerRightContent>
+          </TextBox>
+          <Button Grid.Column="1" Classes="tonal" Margin="8,0,0,0" Command="{Binding MaxCommand}" VerticalAlignment="Stretch">
+            <TextBlock Text="{l:T 'Máx.'}" />
+          </Button>
+        </Grid>
+      </StackPanel>
+
+      <Grid ColumnDefinitions="*,12,2*">
+        <StackPanel Spacing="6">
+          <TextBlock Text="{l:T 'Comisión'}" Classes="overline" />
+          <TextBox Text="{Binding Fee}" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" Spacing="6">
+          <TextBlock Text="{l:T 'Memo (opcional, público)'}" Classes="overline" />
+          <TextBox Text="{Binding Memo}" MaxLength="80" Watermark="{l:T 'Visible para todos en la cadena'}" />
+        </StackPanel>
+      </Grid>
+      <TextBlock Text="{Binding MinFeeText}" Classes="caption" TextWrapping="Wrap" />
+
+      <Border Classes="notice danger" IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock Text="{Binding Error}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+      </Border>
+
+      <Button Classes="filled" HorizontalAlignment="Stretch" Command="{Binding ReviewCommand}">
+        <TextBlock Text="{l:T 'Revisar envío'}" />
+      </Button>
+    </StackPanel>
+
+    <!-- Confirmación -->
+    <StackPanel Spacing="16" IsVisible="{Binding IsConfirmStep}">
+      <TextBlock Classes="body" Text="{l:T 'Revisá con atención. Una vez confirmada en un bloque, la transferencia no se puede revertir.'}" />
+      <Border Classes="tile" Padding="18">
+        <StackPanel Spacing="14">
+          <StackPanel Spacing="3">
+            <TextBlock Text="{l:T 'ENVIÁS'}" Classes="overline" />
+            <TextBlock Text="{Binding ConfirmAmount}" FontSize="28" FontWeight="Bold" />
+          </StackPanel>
+          <StackPanel Spacing="3">
+            <TextBlock Text="{l:T 'A'}" Classes="overline" />
+            <TextBlock Text="{Binding ConfirmRecipientPseudonym}" FontWeight="SemiBold" />
+            <SelectableTextBlock Text="{Binding ConfirmRecipient}" Classes="mono" FontSize="12" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}" />
+          </StackPanel>
+          <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+            <TextBlock Text="{l:T 'Comisión'}" Classes="caption" FontSize="13" Margin="0,0,0,8" />
+            <TextBlock Grid.Column="1" Text="{Binding ConfirmFee}" FontWeight="SemiBold" />
+            <TextBlock Grid.Row="1" Text="{l:T 'Total a debitar'}" Classes="caption" FontSize="13" Margin="0,0,0,8" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ConfirmTotal}" FontWeight="Bold" />
+            <TextBlock Grid.Row="2" Text="{l:T 'Transacciones'}" Classes="caption" FontSize="13" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ConfirmNonce}" FontWeight="SemiBold" />
+          </Grid>
+          <TextBlock Text="{Binding ConfirmExpiry}" Classes="caption" TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+      <Border Classes="notice danger" IsVisible="{Binding ConfirmLinkWarning, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock Text="{Binding ConfirmLinkWarning}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+      </Border>
+      <Border Classes="notice">
+        <TextBlock Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}"
+                   Text="{l:T 'Verificá que el seudónimo y la dirección coincidan con lo que te pasó el destinatario. Los seudónimos no son únicos: la dirección es la que cuenta.'}" />
+      </Border>
+      <Grid ColumnDefinitions="*,10,2*">
+        <Button Classes="outlined" HorizontalAlignment="Stretch" Command="{Binding BackCommand}">
+          <TextBlock Text="{l:T 'Volver'}" />
+        </Button>
+        <Button Grid.Column="2" Classes="filled" HorizontalAlignment="Stretch" Command="{Binding SubmitCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Data="{x:Static ui:Icons.Send}" />
+            <TextBlock Text="{l:T 'Firmar y enviar'}" />
+          </StackPanel>
+        </Button>
+      </Grid>
+    </StackPanel>
+
+    <!-- Comprobante -->
+    <StackPanel Spacing="16" IsVisible="{Binding IsDoneStep}">
+      <Border Classes="iconBadge green" Width="60" Height="60" CornerRadius="20" HorizontalAlignment="Center">
+        <PathIcon Data="{x:Static ui:Icons.Send}" Width="26" Height="26" />
+      </Border>
+      <TextBlock Text="{l:T 'Transacción enviada'}" Classes="h2" FontSize="22" HorizontalAlignment="Center" />
+      <TextBlock Classes="body" TextAlignment="Center"
+                 TextWrapping="Wrap"
+                 Text="{l:T 'Primero viaja en privado por otros nodos (Dandelion++), para que no se sepa que salió de tu PC, y después se difunde a toda la red. Quedará confirmada cuando un minero la incluya en un bloque.'}" />
+      <Border Classes="tile">
+        <StackPanel Spacing="4">
+          <TextBlock Text="{l:T 'ID DE TRANSACCIÓN (SHA-256d)'}" Classes="overline" />
+          <SelectableTextBlock Text="{Binding TxId}" Classes="mono" FontSize="12" TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+      <Grid ColumnDefinitions="*,10,*">
+        <Button Classes="tonal" HorizontalAlignment="Stretch" Command="{Binding CopyTxIdCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Data="{x:Static ui:Icons.Copy}" />
+            <TextBlock Text="{l:T 'Copiar ID'}" />
+          </StackPanel>
+        </Button>
+        <Button Grid.Column="2" Classes="filled" HorizontalAlignment="Stretch" Command="{Binding FinishCommand}">
+          <TextBlock Text="{l:T 'Listo'}" />
+        </Button>
+      </Grid>
+    </StackPanel>
+  </Panel>
+</UserControl>

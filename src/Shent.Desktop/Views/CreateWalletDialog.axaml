@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.CreateWalletDialog"
+             x:DataType="vm:CreateWalletDialogViewModel">
+  <Panel>
+    <!-- Paso 1: formulario -->
+    <StackPanel Spacing="16" IsVisible="{Binding IsFormStep}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="{l:T 'Nombre (solo visible para vos)'}" Classes="overline" />
+        <TextBox Text="{Binding Label}" MaxLength="40" />
+      </StackPanel>
+
+      <StackPanel Spacing="10">
+        <TextBlock Text="{l:T 'Contraseña maestra'}" Classes="overline" />
+        <StackPanel Orientation="Horizontal" Spacing="18">
+          <RadioButton GroupName="pw" IsChecked="{Binding UseGenerated}" Content="{l:T 'Generar una segura'}" />
+          <RadioButton GroupName="pw" IsChecked="{Binding UseCustom}" Content="{l:T 'Elegir la mía'}" />
+        </StackPanel>
+
+        <Border Classes="tile" IsVisible="{Binding UseGenerated}" Padding="16">
+          <StackPanel Spacing="12">
+            <SelectableTextBlock Text="{Binding GeneratedPassword}" Classes="mono" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center" LetterSpacing="1" />
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+              <Button Classes="tonal" Padding="12,7" Command="{Binding CopyPasswordCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <PathIcon Data="{x:Static ui:Icons.Copy}" Width="13" Height="13" />
+                  <TextBlock Text="{l:T 'Copiar'}" FontSize="13" />
+                </StackPanel>
+              </Button>
+              <Button Classes="tonal" Padding="12,7" Command="{Binding RegenerateCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <PathIcon Data="{x:Static ui:Icons.Refresh}" Width="13" Height="13" />
+                  <TextBlock Text="{l:T 'Otra'}" FontSize="13" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Spacing="10" IsVisible="{Binding UseCustom}">
+          <TextBox Text="{Binding CustomPassword}" PasswordChar="●" Watermark="{l:T 'Al menos 12 caracteres'}" />
+          <TextBox Text="{Binding ConfirmPassword}" PasswordChar="●" Watermark="{l:T 'Repetí la contraseña'}" />
+        </StackPanel>
+
+        <StackPanel Spacing="6">
+          <ProgressBar Minimum="0" Maximum="4" Value="{Binding Strength}" />
+          <TextBlock Text="{Binding StrengthText}" Classes="caption" />
+        </StackPanel>
+      </StackPanel>
+
+      <Border Classes="notice">
+        <TextBlock Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}"
+                   Text="{l:T 'La contraseña cifra tu clave privada en esta PC. Nadie puede restablecerla: si la perdés junto con el respaldo, perdés las monedas.'}" />
+      </Border>
+
+      <CheckBox IsChecked="{Binding SavedConfirmed}">
+        <TextBlock Text="{l:T 'Guardé la contraseña en un lugar seguro (gestor de contraseñas o papel).'}" TextWrapping="Wrap" />
+      </CheckBox>
+
+      <Border Classes="notice danger" IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock Text="{Binding Error}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+      </Border>
+
+      <Button Classes="filled" HorizontalAlignment="Stretch" Command="{Binding CreateCommand}" IsEnabled="{Binding CanCreate}">
+        <Panel>
+          <TextBlock Text="{l:T 'Crear billetera'}" IsVisible="{Binding !IsBusy}" />
+          <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsBusy}">
+            <ProgressBar IsIndeterminate="True" Width="60" VerticalAlignment="Center" />
+            <TextBlock Text="{l:T 'Generando claves y cifrando…'}" />
+          </StackPanel>
+        </Panel>
+      </Button>
+    </StackPanel>
+
+    <!-- Paso 2: lista -->
+    <StackPanel Spacing="16" IsVisible="{Binding IsDoneStep}">
+      <Border Classes="iconBadge green" Width="60" Height="60" CornerRadius="20" HorizontalAlignment="Center">
+        <PathIcon Data="{x:Static ui:Icons.Shield}" Width="28" Height="28" />
+      </Border>
+      <TextBlock Text="{l:T '¡Billetera creada!'}" Classes="h2" FontSize="22" HorizontalAlignment="Center" />
+      <TextBlock Text="{Binding CreatedPseudonym}" HorizontalAlignment="Center" FontWeight="SemiBold" Foreground="{StaticResource Primary}" />
+      <Border Classes="tile">
+        <SelectableTextBlock Text="{Binding CreatedAddress}" Classes="mono" FontSize="12.5" TextWrapping="Wrap" TextAlignment="Center" />
+      </Border>
+      <Border Classes="notice">
+        <TextBlock Classes="caption" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}"
+                   Text="{l:T 'Guardá ahora una copia del respaldo cifrado (.shent) fuera de esta PC: un pendrive o tu nube. Sin ese archivo no podrás restaurar la billetera en otro equipo.'}" />
+      </Border>
+      <Grid ColumnDefinitions="*,10,*">
+        <Button Classes="filled" HorizontalAlignment="Stretch" Command="{Binding ExportBackupCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Data="{x:Static ui:Icons.Upload}" />
+            <TextBlock Text="{l:T 'Guardar respaldo'}" />
+          </StackPanel>
+        </Button>
+        <Button Grid.Column="2" Classes="outlined" HorizontalAlignment="Stretch" Command="{Binding FinishCommand}">
+          <TextBlock Text="{l:T 'Listo'}" />
+        </Button>
+      </Grid>
+    </StackPanel>
+  </Panel>
+</UserControl>

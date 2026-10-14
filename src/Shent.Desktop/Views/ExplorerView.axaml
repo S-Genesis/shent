@@ -1,0 +1,149 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             xmlns:views="using:Shent.Desktop.Views"
+             x:Class="Shent.Desktop.Views.ExplorerView"
+             x:DataType="vm:ExplorerViewModel">
+
+  <UserControl.Resources>
+    <DataTemplate x:Key="RowsTemplate" x:DataType="vm:DetailRow">
+      <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+        <StackPanel Spacing="3">
+          <TextBlock Text="{Binding Label}" Classes="overline" />
+          <SelectableTextBlock Text="{Binding Value}" TextWrapping="Wrap" FontSize="13" Classes.mono="{Binding Mono}" />
+        </StackPanel>
+        <Button Grid.Column="1" Classes="icon" Width="30" Height="30" Margin="8,0,0,0" VerticalAlignment="Bottom"
+                IsVisible="{Binding Copyable}" ToolTip.Tip="{l:T 'Copiar'}"
+                Command="{Binding $parent[views:ExplorerView].((vm:ExplorerViewModel)DataContext).CopyCommand}" CommandParameter="{Binding Value}">
+          <PathIcon Data="{x:Static ui:Icons.Copy}" Width="12" Height="12" />
+        </Button>
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TxRowTemplate" x:DataType="vm:TxRow">
+      <Button Classes="tonal" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="12,10" Margin="0,0,0,6"
+              Command="{Binding $parent[views:ExplorerView].((vm:ExplorerViewModel)DataContext).OpenTxCommand}" CommandParameter="{Binding}">
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel Spacing="2">
+            <TextBlock FontSize="12.5">
+              <Run Text="{Binding Kind}" FontWeight="SemiBold" />
+              <Run Text=" · " Foreground="{StaticResource TextMuted}" />
+              <Run Text="{Binding ShortId}" Foreground="{StaticResource TextSecondary}" FontWeight="Normal" />
+            </TextBlock>
+            <TextBlock Classes="caption" FontSize="11.5" FontWeight="Normal">
+              <Run Text="{Binding From}" /><Run Text=" → " /><Run Text="{Binding To}" />
+            </TextBlock>
+          </StackPanel>
+          <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock Text="{Binding Amount}" FontWeight="SemiBold" HorizontalAlignment="Right" />
+            <TextBlock Text="{Binding FeeText}" Classes="caption" FontSize="11" FontWeight="Normal" HorizontalAlignment="Right" />
+          </StackPanel>
+        </Grid>
+      </Button>
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <Grid ColumnDefinitions="*,18,*" Margin="0,0,0,24">
+
+    <!-- Lista de bloques + búsqueda -->
+    <Border Classes="card" Padding="20">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,14">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBox Text="{Binding Query}" Watermark="{l:T 'Altura, hash de bloque, ID de transacción o dirección'}">
+              <TextBox.InnerLeftContent>
+                <PathIcon Data="{x:Static ui:Icons.Search}" Width="15" Height="15" Margin="14,0,0,0" Foreground="{StaticResource TextMuted}" />
+              </TextBox.InnerLeftContent>
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding SearchCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+            <Button Grid.Column="1" Classes="filled" Margin="10,0,0,0" Command="{Binding SearchCommand}">
+              <TextBlock Text="{l:T 'Buscar'}" />
+            </Button>
+          </Grid>
+          <TextBlock Text="{Binding SearchError}" IsVisible="{Binding SearchError, Converter={x:Static ObjectConverters.IsNotNull}}"
+                     Foreground="{StaticResource Danger}" FontSize="12.5" TextWrapping="Wrap" />
+        </StackPanel>
+        <Button DockPanel.Dock="Bottom" Classes="tonal" HorizontalAlignment="Stretch" Margin="0,10,0,0" Command="{Binding LoadMoreCommand}">
+          <TextBlock Text="{l:T 'Cargar bloques anteriores'}" />
+        </Button>
+        <ListBox Classes="plain" ItemsSource="{Binding Blocks}" SelectedItem="{Binding SelectedBlock}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:BlockItem">
+              <Border Padding="12,10" CornerRadius="16" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <Border Classes="iconBadge" Width="38" Height="38"><PathIcon Data="{x:Static ui:Icons.Cube}" /></Border>
+                  <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center" Spacing="1">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="{Binding HeightText}" FontWeight="SemiBold" />
+                      <TextBlock Text="{Binding ShortHash}" Classes="caption mono" FontSize="11.5" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock Classes="caption">
+                      <Run Text="{Binding TxText}" /><Run Text=" · " /><Run Text="{Binding Size}" /><Run Text=" · " /><Run Text="{Binding MinerShort}" />
+                    </TextBlock>
+                  </StackPanel>
+                  <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Reward}" FontWeight="SemiBold" Foreground="{StaticResource Amber}" HorizontalAlignment="Right" />
+                    <TextBlock Text="{Binding TimeAgo}" Classes="caption" HorizontalAlignment="Right" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </DockPanel>
+    </Border>
+
+    <!-- Detalle -->
+    <Border Grid.Column="2" Classes="card" Padding="22">
+      <Panel>
+        <StackPanel IsVisible="{Binding !HasDetail}" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="12" MaxWidth="340">
+          <Border Classes="iconBadge" Width="60" Height="60" CornerRadius="20" HorizontalAlignment="Center">
+            <PathIcon Data="{x:Static ui:Icons.Cube}" Width="26" Height="26" />
+          </Border>
+          <TextBlock Text="{l:T 'Explorá la cadena'}" Classes="h2" HorizontalAlignment="Center" />
+          <TextBlock Classes="body" TextAlignment="Center"
+                     Text="{l:T 'Seleccioná un bloque o buscá una transacción o dirección. Los datos salen de la copia local de la cadena, validada por este nodo.'}" />
+        </StackPanel>
+
+        <DockPanel IsVisible="{Binding HasDetail}">
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+            <StackPanel Spacing="2">
+              <TextBlock Text="{Binding Detail.Kind, FallbackValue=''}" Classes="overline" />
+              <TextBlock Text="{Binding Detail.Heading, FallbackValue=''}" Classes="h2" FontSize="20" />
+            </StackPanel>
+            <Button Grid.Column="1" Classes="icon" Command="{Binding CloseDetailCommand}" VerticalAlignment="Top">
+              <PathIcon Data="{x:Static ui:Icons.Close}" />
+            </Button>
+          </Grid>
+          <ScrollViewer Classes="page">
+            <ContentControl Content="{Binding Detail}">
+              <ContentControl.DataTemplates>
+                <DataTemplate x:DataType="vm:BlockDetail">
+                  <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource RowsTemplate}" />
+                    <TextBlock Text="{l:T 'Transacciones'}" Classes="h3" Margin="0,8,0,10" />
+                    <ItemsControl ItemsSource="{Binding Transactions}" ItemTemplate="{StaticResource TxRowTemplate}" />
+                  </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:DataType="vm:AddressDetail">
+                  <StackPanel>
+                    <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource RowsTemplate}" />
+                    <TextBlock Text="{l:T 'Últimas transacciones'}" Classes="h3" Margin="0,8,0,10" />
+                    <ItemsControl ItemsSource="{Binding Transactions}" ItemTemplate="{StaticResource TxRowTemplate}" />
+                  </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:DataType="vm:TxDetail">
+                  <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource RowsTemplate}" />
+                </DataTemplate>
+              </ContentControl.DataTemplates>
+            </ContentControl>
+          </ScrollViewer>
+        </DockPanel>
+      </Panel>
+    </Border>
+  </Grid>
+</UserControl>

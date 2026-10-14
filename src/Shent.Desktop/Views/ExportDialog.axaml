@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="using:Shent.Desktop.Localization"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:ui="using:Shent.Desktop.UI"
+             x:Class="Shent.Desktop.Views.ExportDialog"
+             x:DataType="vm:ExportDialogViewModel">
+  <StackPanel Spacing="18">
+    <Border Classes="tile" Padding="18">
+      <StackPanel Spacing="10">
+        <TextBlock Text="{l:T 'Respaldo cifrado'}" Classes="h3" />
+        <TextBlock Classes="caption" TextWrapping="Wrap" Text="{l:T 'El archivo .shent contiene tu clave privada cifrada. Sin la contraseña no sirve para nada; con ella, restaura la billetera en cualquier PC.'}" />
+        <TextBlock Text="{Binding KdfText}" Classes="caption mono" FontSize="11.5" />
+        <SelectableTextBlock Text="{Binding FilePath}" Classes="mono" FontSize="11.5" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="filled" Command="{Binding SaveCopyCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <PathIcon Data="{x:Static ui:Icons.Upload}" />
+              <TextBlock Text="{l:T 'Guardar una copia…'}" />
+            </StackPanel>
+          </Button>
+          <Button Classes="tonal" Command="{Binding OpenFolderCommand}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <PathIcon Data="{x:Static ui:Icons.Folder}" />
+              <TextBlock Text="{l:T 'Abrir carpeta'}" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+
+    <StackPanel Spacing="10">
+      <TextBlock Text="{l:T 'Cambiar contraseña maestra'}" Classes="h3" />
+      <TextBox Text="{Binding CurrentPassword}" PasswordChar="●" Watermark="{l:T 'Contraseña actual'}" />
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBox Text="{Binding NewPassword}" PasswordChar="●" Watermark="{l:T 'Nueva contraseña (mín. 12 caracteres)'}" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" Margin="8,0,0,0">
+          <Button Classes="icon" Width="44" Height="44" Command="{Binding GenerateNewCommand}" ToolTip.Tip="{l:T 'Generar una segura'}">
+            <PathIcon Data="{x:Static ui:Icons.Key}" />
+          </Button>
+          <Button Classes="icon" Width="44" Height="44" Command="{Binding CopyNewCommand}" ToolTip.Tip="{l:T 'Copiar la nueva contraseña'}">
+            <PathIcon Data="{x:Static ui:Icons.Copy}" />
+          </Button>
+        </StackPanel>
+      </Grid>
+      <TextBox Text="{Binding ConfirmPassword}" PasswordChar="●" Watermark="{l:T 'Repetí la nueva contraseña'}" />
+
+      <Border Classes="notice danger" IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock Text="{Binding Error}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" FontSize="13" />
+      </Border>
+      <Border Classes="notice success" IsVisible="{Binding Success, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TextBlock Text="{Binding Success}" Foreground="{StaticResource Success}" TextWrapping="Wrap" FontSize="13" />
+      </Border>
+
+      <Button Classes="outlined" HorizontalAlignment="Stretch" Command="{Binding ChangePasswordCommand}" IsEnabled="{Binding !IsBusy}">
+        <Panel>
+          <TextBlock Text="{l:T 'Cambiar contraseña'}" IsVisible="{Binding !IsBusy}" />
+          <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsBusy}">
+            <ProgressBar IsIndeterminate="True" Width="60" VerticalAlignment="Center" />
+            <TextBlock Text="{l:T 'Re-cifrando…'}" />
+          </StackPanel>
+        </Panel>
+      </Button>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

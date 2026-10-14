@@ -1,0 +1,219 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Shent.Desktop.ViewModels"
+        xmlns:ui="using:Shent.Desktop.UI"
+        xmlns:l="using:Shent.Desktop.Localization"
+        mc:Ignorable="d"
+        x:Class="Shent.Desktop.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="SHENT"
+        Icon="avares://SHENT/Assets/shent.ico"
+        Width="1360" Height="860"
+        MinWidth="960" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource Bg}"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="38"
+        TransparencyLevelHint="None">
+
+  <Panel>
+    <!-- Brillo ambiental de fondo -->
+    <Panel IsHitTestVisible="False">
+      <Ellipse Width="760" Height="760" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-380,-260,0" Opacity="0.20">
+        <Ellipse.Fill>
+          <RadialGradientBrush>
+            <GradientStop Color="#8B7CFF" Offset="0" />
+            <GradientStop Color="#008B7CFF" Offset="1" />
+          </RadialGradientBrush>
+        </Ellipse.Fill>
+      </Ellipse>
+      <Ellipse Width="640" Height="640" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="120,0,0,-380" Opacity="0.12">
+        <Ellipse.Fill>
+          <RadialGradientBrush>
+            <GradientStop Color="#22D3EE" Offset="0" />
+            <GradientStop Color="#0022D3EE" Offset="1" />
+          </RadialGradientBrush>
+        </Ellipse.Fill>
+      </Ellipse>
+    </Panel>
+
+    <Grid ColumnDefinitions="264,*">
+
+      <!-- ================= Barra de navegación ================= -->
+      <Border Grid.Column="0" Background="{StaticResource Rail}" BorderBrush="{StaticResource Stroke}" BorderThickness="0,0,1,0">
+        <DockPanel Margin="16,44,16,16">
+
+          <!-- Logo -->
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="8,0,0,26">
+            <Panel Width="42" Height="42">
+              <Path Data="{x:Static ui:Icons.Hexagon}" Fill="{StaticResource PrimaryGradient}" Stretch="Uniform" />
+              <TextBlock Text="S" FontSize="20" FontWeight="Black" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Panel>
+            <StackPanel VerticalAlignment="Center" Spacing="1">
+              <TextBlock Text="SHENT" FontSize="19" FontWeight="Black" LetterSpacing="1.5" />
+              <TextBlock Text="{l:T 'Nodo P2P · Prueba de trabajo'}" Classes="caption" FontSize="11" />
+            </StackPanel>
+          </StackPanel>
+
+          <!-- Tarjeta de billetera -->
+          <Border DockPanel.Dock="Bottom" Classes="tile" Padding="12" Background="{StaticResource Surface1}" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+            <Panel>
+              <Button Classes="tonal" HorizontalAlignment="Stretch" IsVisible="{Binding !HasWallet}" Command="{Binding GoToWalletCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <PathIcon Data="{x:Static ui:Icons.Wallet}" />
+                  <TextBlock Text="{l:T 'Abrir billetera'}" />
+                </StackPanel>
+              </Button>
+              <Grid ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding HasWallet}">
+                <Border Width="38" Height="38" CornerRadius="12" Background="{StaticResource PrimaryGradient}">
+                  <TextBlock Text="{Binding WalletInitials}" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="10,0,6,0" VerticalAlignment="Center" Spacing="1">
+                  <TextBlock Text="{Binding WalletPseudonym}" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Text="{Binding WalletBalance}" Classes="caption" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+                <Button Grid.Column="2" Classes="icon" Width="32" Height="32" Command="{Binding CopyAddressCommand}" ToolTip.Tip="{l:T 'Copiar dirección'}">
+                  <PathIcon Data="{x:Static ui:Icons.Copy}" Width="14" Height="14" />
+                </Button>
+              </Grid>
+            </Panel>
+          </Border>
+
+          <!-- Estado de minado -->
+          <Border DockPanel.Dock="Bottom" Margin="0,0,0,10" CornerRadius="18" Padding="14,12"
+                  Background="{StaticResource Surface1}" BorderBrush="{StaticResource Stroke}" BorderThickness="1">
+            <Grid ColumnDefinitions="Auto,*">
+              <Panel Width="34" Height="34">
+                <Border CornerRadius="11" Background="{StaticResource AmberSoft}" IsVisible="{Binding IsMining}" />
+                <Border CornerRadius="11" Background="#12FFFFFF" IsVisible="{Binding !IsMining}" />
+                <PathIcon Data="{x:Static ui:Icons.Flash}" Width="16" Height="16" Foreground="{StaticResource Amber}" IsVisible="{Binding IsMining}" />
+                <PathIcon Data="{x:Static ui:Icons.Flash}" Width="16" Height="16" Foreground="{StaticResource TextMuted}" IsVisible="{Binding !IsMining}" />
+              </Panel>
+              <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Spacing="1">
+                <TextBlock Text="{l:T 'Minería'}" Classes="overline" />
+                <TextBlock Text="{Binding MiningText}" FontWeight="SemiBold" FontSize="13" />
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <TextBlock DockPanel.Dock="Bottom" Text="{Binding VersionText}" Classes="caption" Margin="10,0,0,12" FontSize="11" />
+
+          <!-- Navegación -->
+          <ListBox Classes="nav" ItemsSource="{Binding Pages}" SelectedItem="{Binding CurrentPage}">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:PageViewModel">
+                <Grid ColumnDefinitions="Auto,Auto,*">
+                  <Border Classes="indicator" Width="3" Height="18" CornerRadius="2" Margin="-10,0,9,0" Background="{StaticResource PrimaryGradient}" />
+                  <PathIcon Grid.Column="1" Data="{Binding Icon}" Width="18" Height="18" />
+                  <TextBlock Grid.Column="2" Text="{Binding Title}" Margin="14,0,0,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextSecondary}" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </DockPanel>
+      </Border>
+
+      <!-- ================= Contenido ================= -->
+      <DockPanel Grid.Column="1">
+
+        <!-- Encabezado -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="36,46,36,18">
+          <StackPanel Spacing="4">
+            <TextBlock Classes="h1" Text="{Binding CurrentPage.Title}" />
+            <TextBlock Classes="caption" FontSize="13" Text="{Binding CurrentPage.Subtitle}" />
+          </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <Border Classes="chip">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Ellipse Classes="dot pulse" Classes.ok="{Binding SyncState, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=ok}"
+                         Classes.warn="{Binding SyncState, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=warn}"
+                         Classes.bad="{Binding SyncState, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=bad}" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding SyncText}" VerticalAlignment="Center" />
+              </StackPanel>
+            </Border>
+            <Border Classes="chip">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <PathIcon Data="{x:Static ui:Icons.Network}" Width="13" Height="13" Foreground="{StaticResource Cyan}" />
+                <TextBlock Text="{Binding PeersText}" VerticalAlignment="Center" />
+              </StackPanel>
+            </Border>
+            <Border Classes="chip">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <PathIcon Data="{x:Static ui:Icons.Cube}" Width="13" Height="13" Foreground="{StaticResource Primary}" />
+                <TextBlock Text="{Binding HeightText}" VerticalAlignment="Center" />
+              </StackPanel>
+            </Border>
+            <Border Classes="chip" Background="{StaticResource PrimarySoft}" BorderBrush="#448B7CFF">
+              <TextBlock Text="{Binding NetworkName}" Foreground="#C9C1FF" />
+            </Border>
+            <Border Classes="chip" Padding="10,0,4,0">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <PathIcon Data="{x:Static ui:Icons.Globe}" Width="13" Height="13" Foreground="{StaticResource Cyan}" />
+                <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" ToolTip.Tip="{l:T 'Idioma'}"
+                          MinWidth="0" Padding="6,2" BorderThickness="0" Background="Transparent" VerticalAlignment="Center">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="l:LanguageInfo">
+                      <TextBlock Text="{Binding NativeName}" />
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </Grid>
+
+        <!-- Aviso legal permanente -->
+        <Border DockPanel.Dock="Bottom" BorderBrush="{StaticResource Stroke}" BorderThickness="0,1,0,0" Padding="36,10">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Data="{x:Static ui:Icons.Info}" Width="13" Height="13" Foreground="{StaticResource TextMuted}" />
+            <TextBlock Classes="caption" FontSize="11.5" TextWrapping="Wrap"
+                       Text="{l:T 'SHENT es una moneda comunitaria.'}" />
+          </StackPanel>
+        </Border>
+
+        <TransitioningContentControl Content="{Binding CurrentPage}" Margin="36,0,36,0">
+          <TransitioningContentControl.PageTransition>
+            <CrossFade Duration="0:0:0.18" />
+          </TransitioningContentControl.PageTransition>
+        </TransitioningContentControl>
+      </DockPanel>
+    </Grid>
+
+    <!-- ================= Diálogos ================= -->
+    <Panel IsVisible="{Binding HasDialog}">
+      <Border Background="#B3050710" PointerPressed="OnBackdropPressed" />
+      <ScrollViewer HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="{Binding $parent[Window].Bounds.Height}">
+        <Border Classes="dialog" Margin="0,40">
+          <DockPanel>
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,18">
+              <TextBlock Classes="h2" FontSize="20" Text="{Binding Dialog.Title, FallbackValue=''}" VerticalAlignment="Center" />
+              <Button Grid.Column="1" Classes="icon" Command="{Binding DismissDialogCommand}" ToolTip.Tip="{l:T 'Cerrar'}">
+                <PathIcon Data="{x:Static ui:Icons.Close}" />
+              </Button>
+            </Grid>
+            <ContentControl Content="{Binding Dialog}" />
+          </DockPanel>
+        </Border>
+      </ScrollViewer>
+    </Panel>
+
+    <!-- ================= Notificaciones ================= -->
+    <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="264,0,0,56"
+            CornerRadius="16" Padding="18,12" MaxWidth="560"
+            Background="#F0181E30" BorderBrush="{StaticResource StrokeStrong}" BorderThickness="1"
+            BoxShadow="0 12 40 0 #80000000"
+            IsVisible="{Binding IsToastVisible}" PointerPressed="OnToastPressed">
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <PathIcon Data="{x:Static ui:Icons.Shield}" Width="16" Height="16" Foreground="{StaticResource Success}"
+                  IsVisible="{Binding ToastKind, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static vm:ToastKind.Success}}" />
+        <PathIcon Data="{x:Static ui:Icons.Info}" Width="16" Height="16" Foreground="{StaticResource Danger}"
+                  IsVisible="{Binding ToastKind, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static vm:ToastKind.Error}}" />
+        <PathIcon Data="{x:Static ui:Icons.Info}" Width="16" Height="16" Foreground="{StaticResource Primary}"
+                  IsVisible="{Binding ToastKind, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static vm:ToastKind.Info}}" />
+        <TextBlock Text="{Binding ToastMessage}" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="480" />
+      </StackPanel>
+    </Border>
+  </Panel>
+</Window>

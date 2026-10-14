@@ -1,0 +1,495 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Styles.Resources>
+    <ResourceDictionary>
+      <!-- Superficies (Material 3, esquema oscuro tonal) -->
+      <SolidColorBrush x:Key="Bg" Color="#090C13" />
+      <SolidColorBrush x:Key="Rail" Color="#0C1019" />
+      <SolidColorBrush x:Key="Surface1" Color="#111623" />
+      <SolidColorBrush x:Key="Surface2" Color="#161C2C" />
+      <SolidColorBrush x:Key="Surface3" Color="#1C2337" />
+      <SolidColorBrush x:Key="Field" Color="#0D111C" />
+      <SolidColorBrush x:Key="Stroke" Color="#1AFFFFFF" />
+      <SolidColorBrush x:Key="StrokeStrong" Color="#2E3756" />
+
+      <!-- Texto -->
+      <SolidColorBrush x:Key="TextPrimary" Color="#EEF0FA" />
+      <SolidColorBrush x:Key="TextSecondary" Color="#A3ABC6" />
+      <SolidColorBrush x:Key="TextMuted" Color="#6E7798" />
+
+      <!-- Acentos -->
+      <SolidColorBrush x:Key="Primary" Color="#8B7CFF" />
+      <SolidColorBrush x:Key="PrimarySoft" Color="#268B7CFF" />
+      <SolidColorBrush x:Key="Cyan" Color="#22D3EE" />
+      <SolidColorBrush x:Key="CyanSoft" Color="#2622D3EE" />
+      <SolidColorBrush x:Key="Amber" Color="#FFB547" />
+      <SolidColorBrush x:Key="AmberSoft" Color="#26FFB547" />
+      <SolidColorBrush x:Key="Success" Color="#34D399" />
+      <SolidColorBrush x:Key="SuccessSoft" Color="#2234D399" />
+      <SolidColorBrush x:Key="Danger" Color="#FB7185" />
+      <SolidColorBrush x:Key="DangerSoft" Color="#22FB7185" />
+
+      <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#9B8CFF" Offset="0" />
+        <GradientStop Color="#6C7BFF" Offset="0.5" />
+        <GradientStop Color="#2BC4F0" Offset="1" />
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="PrimaryGradientHover" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#ADA1FF" Offset="0" />
+        <GradientStop Color="#8090FF" Offset="0.5" />
+        <GradientStop Color="#4AD3F5" Offset="1" />
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="HeroGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#4B3FD1" Offset="0" />
+        <GradientStop Color="#3048B8" Offset="0.45" />
+        <GradientStop Color="#0E7FA8" Offset="1" />
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="MiningGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#FFC86B" Offset="0" />
+        <GradientStop Color="#FF8A3D" Offset="0.55" />
+        <GradientStop Color="#F0517A" Offset="1" />
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="IdleGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Color="#2A3352" Offset="0" />
+        <GradientStop Color="#1A2036" Offset="1" />
+      </LinearGradientBrush>
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <!-- ===================== Tipografía ===================== -->
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+  </Style>
+  <Style Selector="TextBlock.display">
+    <Setter Property="FontSize" Value="44" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="LetterSpacing" Value="-1" />
+  </Style>
+  <Style Selector="TextBlock.h1">
+    <Setter Property="FontSize" Value="26" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="LetterSpacing" Value="-0.4" />
+  </Style>
+  <Style Selector="TextBlock.h2">
+    <Setter Property="FontSize" Value="18" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="TextBlock.h3">
+    <Setter Property="FontSize" Value="15" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="TextBlock.body">
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="LineHeight" Value="21" />
+  </Style>
+  <Style Selector="TextBlock.caption">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+  </Style>
+  <Style Selector="TextBlock.overline">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="LetterSpacing" Value="1.2" />
+    <Setter Property="Foreground" Value="{StaticResource TextMuted}" />
+  </Style>
+  <Style Selector="TextBlock.mono, SelectableTextBlock.mono">
+    <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, Menlo, SF Mono, monospace" />
+    <Setter Property="FontSize" Value="13" />
+  </Style>
+  <Style Selector="TextBlock.stat">
+    <Setter Property="FontSize" Value="24" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="LetterSpacing" Value="-0.5" />
+  </Style>
+
+  <!-- ===================== Superficies ===================== -->
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{StaticResource Surface1}" />
+    <Setter Property="BorderBrush" Value="{StaticResource Stroke}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="24" />
+    <Setter Property="Padding" Value="22" />
+  </Style>
+  <Style Selector="Border.tile">
+    <Setter Property="Background" Value="{StaticResource Surface2}" />
+    <Setter Property="CornerRadius" Value="18" />
+    <Setter Property="Padding" Value="16" />
+  </Style>
+  <Style Selector="Border.hero">
+    <Setter Property="Background" Value="{StaticResource HeroGradient}" />
+    <Setter Property="CornerRadius" Value="28" />
+    <Setter Property="Padding" Value="28" />
+    <Setter Property="ClipToBounds" Value="True" />
+    <Setter Property="BoxShadow" Value="0 18 48 0 #503B2FB0" />
+  </Style>
+  <Style Selector="Border.iconBadge">
+    <Setter Property="Width" Value="42" />
+    <Setter Property="Height" Value="42" />
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Background" Value="{StaticResource PrimarySoft}" />
+  </Style>
+  <Style Selector="Border.iconBadge PathIcon">
+    <Setter Property="Width" Value="20" />
+    <Setter Property="Height" Value="20" />
+    <Setter Property="Foreground" Value="{StaticResource Primary}" />
+  </Style>
+  <Style Selector="Border.iconBadge.cyan"><Setter Property="Background" Value="{StaticResource CyanSoft}" /></Style>
+  <Style Selector="Border.iconBadge.cyan PathIcon"><Setter Property="Foreground" Value="{StaticResource Cyan}" /></Style>
+  <Style Selector="Border.iconBadge.amber"><Setter Property="Background" Value="{StaticResource AmberSoft}" /></Style>
+  <Style Selector="Border.iconBadge.amber PathIcon"><Setter Property="Foreground" Value="{StaticResource Amber}" /></Style>
+  <Style Selector="Border.iconBadge.green"><Setter Property="Background" Value="{StaticResource SuccessSoft}" /></Style>
+  <Style Selector="Border.iconBadge.green PathIcon"><Setter Property="Foreground" Value="{StaticResource Success}" /></Style>
+  <Style Selector="Border.iconBadge.red"><Setter Property="Background" Value="{StaticResource DangerSoft}" /></Style>
+  <Style Selector="Border.iconBadge.red PathIcon"><Setter Property="Foreground" Value="{StaticResource Danger}" /></Style>
+
+  <Style Selector="Border.chip">
+    <Setter Property="Background" Value="#12FFFFFF" />
+    <Setter Property="BorderBrush" Value="{StaticResource Stroke}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Padding" Value="12,6" />
+  </Style>
+  <Style Selector="Border.chip TextBlock">
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Ellipse.dot">
+    <Setter Property="Width" Value="8" />
+    <Setter Property="Height" Value="8" />
+    <Setter Property="Fill" Value="{StaticResource TextMuted}" />
+  </Style>
+  <Style Selector="Ellipse.dot.ok"><Setter Property="Fill" Value="{StaticResource Success}" /></Style>
+  <Style Selector="Ellipse.dot.warn"><Setter Property="Fill" Value="{StaticResource Amber}" /></Style>
+  <Style Selector="Ellipse.dot.bad"><Setter Property="Fill" Value="{StaticResource Danger}" /></Style>
+  <Style Selector="Ellipse.dot.pulse">
+    <Style.Animations>
+      <Animation Duration="0:0:1.6" IterationCount="Infinite">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="1" /></KeyFrame>
+        <KeyFrame Cue="50%"><Setter Property="Opacity" Value="0.35" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="1" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+
+  <Style Selector="Border.notice">
+    <Setter Property="Background" Value="#14FFB547" />
+    <Setter Property="BorderBrush" Value="#40FFB547" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="16" />
+    <Setter Property="Padding" Value="14,12" />
+  </Style>
+  <Style Selector="Border.notice.info">
+    <Setter Property="Background" Value="#148B7CFF" />
+    <Setter Property="BorderBrush" Value="#408B7CFF" />
+  </Style>
+  <Style Selector="Border.notice.danger">
+    <Setter Property="Background" Value="#14FB7185" />
+    <Setter Property="BorderBrush" Value="#50FB7185" />
+  </Style>
+  <Style Selector="Border.notice.success">
+    <Setter Property="Background" Value="#1434D399" />
+    <Setter Property="BorderBrush" Value="#5034D399" />
+  </Style>
+
+  <!-- ===================== Botones ===================== -->
+  <Style Selector="Button">
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Padding" Value="18,11" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="Button.filled">
+    <Setter Property="Background" Value="{StaticResource PrimaryGradient}" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="Button.filled:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource PrimaryGradientHover}" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.filled:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource PrimaryGradient}" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="Button.filled:disabled /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#232A40" />
+    <Setter Property="Foreground" Value="#5D6584" />
+  </Style>
+
+  <Style Selector="Button.mining">
+    <Setter Property="Background" Value="{StaticResource MiningGradient}" />
+    <Setter Property="Foreground" Value="#1A0F05" />
+  </Style>
+  <Style Selector="Button.mining:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource MiningGradient}" />
+    <Setter Property="Foreground" Value="#1A0F05" />
+    <Setter Property="Opacity" Value="0.92" />
+  </Style>
+
+  <Style Selector="Button.tonal">
+    <Setter Property="Background" Value="#16FFFFFF" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="Button.tonal:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#24FFFFFF" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+  </Style>
+  <Style Selector="Button.tonal:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#30FFFFFF" />
+  </Style>
+
+  <Style Selector="Button.glass">
+    <Setter Property="Background" Value="#26FFFFFF" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="BorderBrush" Value="#33FFFFFF" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="Button.glass:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#3DFFFFFF" />
+    <Setter Property="BorderBrush" Value="#55FFFFFF" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+
+  <Style Selector="Button.outlined">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+    <Setter Property="BorderBrush" Value="{StaticResource StrokeStrong}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="Button.outlined:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#10FFFFFF" />
+    <Setter Property="BorderBrush" Value="{StaticResource Primary}" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+  </Style>
+
+  <Style Selector="Button.danger">
+    <Setter Property="Background" Value="{StaticResource DangerSoft}" />
+    <Setter Property="Foreground" Value="{StaticResource Danger}" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#38FB7185" />
+    <Setter Property="Foreground" Value="{StaticResource Danger}" />
+  </Style>
+
+  <Style Selector="Button.icon">
+    <Setter Property="Width" Value="38" />
+    <Setter Property="Height" Value="38" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="Background" Value="#12FFFFFF" />
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="Button.icon:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#24FFFFFF" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+  </Style>
+  <Style Selector="Button.icon PathIcon">
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Height" Value="16" />
+  </Style>
+
+  <Style Selector="Button PathIcon">
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Height" Value="16" />
+  </Style>
+
+  <!-- ===================== Campos ===================== -->
+  <Style Selector="TextBox">
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="Padding" Value="14,11" />
+    <Setter Property="MinHeight" Value="46" />
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="TextBox /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{StaticResource Field}" />
+    <Setter Property="BorderBrush" Value="{StaticResource StrokeStrong}" />
+  </Style>
+  <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{StaticResource Field}" />
+    <Setter Property="BorderBrush" Value="#4A5478" />
+  </Style>
+  <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="{StaticResource Field}" />
+    <Setter Property="BorderBrush" Value="{StaticResource Primary}" />
+    <Setter Property="BorderThickness" Value="1.5" />
+  </Style>
+  <Style Selector="TextBox.big">
+    <Setter Property="FontSize" Value="26" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="MinHeight" Value="64" />
+  </Style>
+
+  <Style Selector="ComboBox">
+    <Setter Property="CornerRadius" Value="14" />
+    <Setter Property="MinHeight" Value="44" />
+    <Setter Property="Padding" Value="14,8" />
+  </Style>
+
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+  </Style>
+
+  <Style Selector="ProgressBar">
+    <Setter Property="Height" Value="8" />
+    <Setter Property="MinHeight" Value="8" />
+    <Setter Property="CornerRadius" Value="99" />
+    <Setter Property="Background" Value="#1CFFFFFF" />
+    <Setter Property="Foreground" Value="{StaticResource PrimaryGradient}" />
+  </Style>
+  <Style Selector="ProgressBar.amber">
+    <Setter Property="Foreground" Value="{StaticResource MiningGradient}" />
+  </Style>
+
+  <!-- ===================== Navegación ===================== -->
+  <Style Selector="ListBox.nav">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem">
+    <Setter Property="Padding" Value="14,0" />
+    <Setter Property="Height" Value="46" />
+    <Setter Property="Margin" Value="0,2" />
+    <Setter Property="CornerRadius" Value="15" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="CornerRadius" Value="15" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#10FFFFFF" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#2A8B7CFF" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem:selected TextBlock">
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem:selected PathIcon">
+    <Setter Property="Foreground" Value="#B9AEFF" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem Border.indicator">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+  <Style Selector="ListBox.nav ListBoxItem:selected Border.indicator">
+    <Setter Property="Opacity" Value="1" />
+  </Style>
+
+  <!-- Listas simples sin selección visible -->
+  <Style Selector="ListBox.plain">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="ListBox.plain ListBoxItem">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Margin" Value="0,0,0,8" />
+  </Style>
+  <Style Selector="ListBox.plain ListBoxItem /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="CornerRadius" Value="18" />
+  </Style>
+  <Style Selector="ListBox.plain ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#08FFFFFF" />
+  </Style>
+  <Style Selector="ListBox.plain ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#188B7CFF" />
+  </Style>
+
+  <!-- ===================== Reactor de minado ===================== -->
+
+  <Style Selector="Panel.reactor.active Ellipse.ring">
+    <Style.Animations>
+      <Animation Duration="0:0:9" IterationCount="Infinite">
+        <KeyFrame Cue="0%"><Setter Property="RotateTransform.Angle" Value="0" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="RotateTransform.Angle" Value="360" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="Panel.reactor.active Ellipse.ringReverse">
+    <Style.Animations>
+      <Animation Duration="0:0:14" IterationCount="Infinite">
+        <KeyFrame Cue="0%"><Setter Property="RotateTransform.Angle" Value="360" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="RotateTransform.Angle" Value="0" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="Panel.reactor Ellipse.glow">
+    <Setter Property="Opacity" Value="0.0" />
+  </Style>
+  <Style Selector="Panel.reactor.active Ellipse.glow">
+    <Style.Animations>
+      <Animation Duration="0:0:2.4" IterationCount="Infinite">
+        <KeyFrame Cue="0%"><Setter Property="Opacity" Value="0.35" /></KeyFrame>
+        <KeyFrame Cue="50%"><Setter Property="Opacity" Value="0.85" /></KeyFrame>
+        <KeyFrame Cue="100%"><Setter Property="Opacity" Value="0.35" /></KeyFrame>
+      </Animation>
+    </Style.Animations>
+  </Style>
+  <Style Selector="Panel.reactor Ellipse.core">
+    <Setter Property="Fill" Value="{StaticResource IdleGradient}" />
+  </Style>
+  <Style Selector="Panel.reactor.active Ellipse.core">
+    <Setter Property="Fill" Value="{StaticResource MiningGradient}" />
+  </Style>
+  <Style Selector="Button.reactorButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+  <Style Selector="Button.reactorButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="Button.reactorButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <!-- ===================== Movimientos ===================== -->
+  <Style Selector="Border.txIcon">
+    <Setter Property="Width" Value="40" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="CornerRadius" Value="13" />
+    <Setter Property="Background" Value="{StaticResource DangerSoft}" />
+  </Style>
+  <Style Selector="Border.txIcon PathIcon">
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Height" Value="16" />
+    <Setter Property="Foreground" Value="{StaticResource Danger}" />
+  </Style>
+  <Style Selector="Border.txIcon.incoming"><Setter Property="Background" Value="{StaticResource SuccessSoft}" /></Style>
+  <Style Selector="Border.txIcon.incoming PathIcon"><Setter Property="Foreground" Value="{StaticResource Success}" /></Style>
+  <Style Selector="Border.txIcon.mined"><Setter Property="Background" Value="{StaticResource AmberSoft}" /></Style>
+  <Style Selector="Border.txIcon.mined PathIcon"><Setter Property="Foreground" Value="{StaticResource Amber}" /></Style>
+  <Style Selector="TextBlock.amount"><Setter Property="Foreground" Value="{StaticResource Danger}" /></Style>
+  <Style Selector="TextBlock.amount.incoming"><Setter Property="Foreground" Value="{StaticResource Success}" /></Style>
+  <Style Selector="TextBlock.amount.mined"><Setter Property="Foreground" Value="{StaticResource Amber}" /></Style>
+
+  <!-- ===================== Diálogos ===================== -->
+  <Style Selector="Border.dialog">
+    <Setter Property="Background" Value="{StaticResource Surface1}" />
+    <Setter Property="BorderBrush" Value="{StaticResource StrokeStrong}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="28" />
+    <Setter Property="Padding" Value="28" />
+    <Setter Property="Width" Value="540" />
+    <Setter Property="BoxShadow" Value="0 30 80 0 #A0000000" />
+  </Style>
+
+  <Style Selector="ScrollViewer">
+    <Setter Property="AllowAutoHide" Value="True" />
+  </Style>
+  <Style Selector="ScrollViewer.page">
+    <Setter Property="Padding" Value="0,0,16,0" />
+  </Style>
+</Styles>

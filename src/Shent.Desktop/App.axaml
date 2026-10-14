@@ -1,0 +1,40 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Shent.Desktop.ViewModels"
+             xmlns:views="using:Shent.Desktop.Views"
+             x:Class="Shent.Desktop.App"
+             Name="SHENT"
+             RequestedThemeVariant="Dark">
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <Color x:Key="SystemAccentColor">#8B7CFF</Color>
+      <Color x:Key="SystemAccentColorLight1">#A091FF</Color>
+      <Color x:Key="SystemAccentColorLight2">#B5A9FF</Color>
+      <Color x:Key="SystemAccentColorLight3">#CBC2FF</Color>
+      <Color x:Key="SystemAccentColorDark1">#7563F5</Color>
+      <Color x:Key="SystemAccentColorDark2">#5F4BE0</Color>
+      <Color x:Key="SystemAccentColorDark3">#4A37C2</Color>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="avares://SHENT/Styles/Theme.axaml" />
+  </Application.Styles>
+
+  <Application.DataTemplates>
+    <DataTemplate DataType="vm:DashboardViewModel"><views:DashboardView /></DataTemplate>
+    <DataTemplate DataType="vm:MiningViewModel"><views:MiningView /></DataTemplate>
+    <DataTemplate DataType="vm:WalletViewModel"><views:WalletView /></DataTemplate>
+    <DataTemplate DataType="vm:NetworkViewModel"><views:NetworkView /></DataTemplate>
+    <DataTemplate DataType="vm:ExplorerViewModel"><views:ExplorerView /></DataTemplate>
+    <DataTemplate DataType="vm:StatsViewModel"><views:StatsView /></DataTemplate>
+    <DataTemplate DataType="vm:SettingsViewModel"><views:SettingsView /></DataTemplate>
+    <DataTemplate DataType="vm:CreateWalletDialogViewModel"><views:CreateWalletDialog /></DataTemplate>
+    <DataTemplate DataType="vm:ImportWalletDialogViewModel"><views:ImportWalletDialog /></DataTemplate>
+    <DataTemplate DataType="vm:SendDialogViewModel"><views:SendDialog /></DataTemplate>
+    <DataTemplate DataType="vm:ReceiveDialogViewModel"><views:ReceiveDialog /></DataTemplate>
+    <DataTemplate DataType="vm:ExportDialogViewModel"><views:ExportDialog /></DataTemplate>
+  </Application.DataTemplates>
+</Application>
